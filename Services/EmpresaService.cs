@@ -184,10 +184,10 @@ namespace API.Services
             var cliente = this._siilcontext.Clientes.Where(e => e.IdEmpresa == idEmpresa).ToList();
             var ejecutivos = this._siilcontext.Ejecutivos.Where(e => e.IdEmpresa == idEmpresa).ToList();
 
-            Console.WriteLine(origenesDestinos);
+            /*Console.WriteLine(origenesDestinos);
             Console.WriteLine(estatusViaje);
             Console.WriteLine(cliente);
-            Console.WriteLine(ejecutivos);
+            Console.WriteLine(ejecutivos);*/
 
             return new FiltroDeBusqueda
             {

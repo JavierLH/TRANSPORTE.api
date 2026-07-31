@@ -19,6 +19,10 @@ public partial class Permiso
     [Unicode(false)]
     public string? RutaModulo { get; set; }
 
+    [Column("ruta_icono")]
+    [Unicode(false)]
+    public string? RutaImagen { get; set; }
+
     [Column("padre")]
     public int? Padre { get; set; }
 

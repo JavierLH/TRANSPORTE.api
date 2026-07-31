@@ -255,34 +255,17 @@ namespace API.Services
             };
         }
 
-        public async Task<ResultadoPaginado<ProgramacionDeViajesVista>> obtenerViajesPorFechaDeLaVista(
-            DateTime? fechaInicio, DateTime? fechaFin, int idEmpresa, int pagina, int tamanoPagina
-        )
+        public async Task<List<ProgramacionDeViajesVista>> obtenerViajesPorFechaDeLaVista(
+            DateTime fechaInicio, DateTime fechaFin, int idEmpresa)
         {
-            var query = _siilcontext.ProgramacionDeViajesVista
-                .Where(v => v.idEmpresa == idEmpresa);
+            var inicio = fechaInicio.Date;
+            var finExclusivo = fechaFin.Date.AddDays(1);
 
-            if (fechaInicio.HasValue)
-                query = query.Where(v => v.Fecha >= fechaInicio.Value);
-
-            if (fechaFin.HasValue)
-                query = query.Where(v => v.Fecha <= fechaFin.Value);
-
-            var totalRegistros = await query.CountAsync();
-
-            var items = await query
-                .OrderByDescending(v => v.Fecha)
-                .Skip((pagina - 1) * tamanoPagina)
-                .Take(tamanoPagina)
+            return await _siilcontext.programacionDeViajesVista
+                .Where(v => v.idEmpresa == idEmpresa
+                         && v.Fecha >= inicio
+                         && v.Fecha < finExclusivo)
                 .ToListAsync();
-
-            return new ResultadoPaginado<ProgramacionDeViajesVista>
-            {
-                Items = items,
-                TotalRegistros = totalRegistros,
-                PaginaActual = pagina,
-                TamanoPagina = tamanoPagina
-            };
         }
 
     }

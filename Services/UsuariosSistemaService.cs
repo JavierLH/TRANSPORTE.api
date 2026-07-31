@@ -220,13 +220,14 @@ namespace API.Services
             if (listaPlana == null || !listaPlana.Any()) return new List<DTOs.Services.PermisoJerarquicoDto>();
 
             var todosLosNodos = listaPlana
-                .GroupBy(p => new { p.IdPermiso, p.NombrePermiso, p.RutaModulo, p.PadreId })
+                .GroupBy(p => new { p.IdPermiso, p.NombrePermiso, p.RutaModulo, p.PadreId, p.ruta_icono })
                 .Select(g => new DTOs.Services.PermisoJerarquicoDto
                 {
                     IdPermiso = g.Key.IdPermiso,
                     NombrePermiso = g.Key.NombrePermiso,
                     RutaModulo = g.Key.RutaModulo ?? "null",
                     Padre = g.Key.PadreId,
+                    rutaImagen = g.Key.ruta_icono,
 
                     Funciones = g.Where(x => !string.IsNullOrEmpty(x.NombreFuncion) && x.NombreFuncion != "null")
                                  .Select(x => x.NombreFuncion)

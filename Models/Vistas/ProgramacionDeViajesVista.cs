@@ -144,7 +144,17 @@ namespace APIV2.Models
         public DateTime? LlegadaPlanta { get; set; }
 
         [Column("empresaId")]
-        public int? idEmpresa;
+        public int? idEmpresa { get; set; }
+
+
+        [Column("operadorRetira")]
+        public string? operadorRetira {  get; set; }
+
+        [Column("citaTerminal")]
+        public string? citaTerminal { get; set; }
+
+        [Column("comentarios")]
+        public string? comentarios { get; set; }
 
     }
 }

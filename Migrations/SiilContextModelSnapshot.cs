@@ -812,6 +812,11 @@ namespace APIV2.Migrations
                         .HasColumnType("int")
                         .HasColumnName("padre");
 
+                    b.Property<string>("RutaImagen")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("ruta_icono");
+
                     b.Property<string>("RutaModulo")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)")
@@ -828,24 +833,28 @@ namespace APIV2.Migrations
                         {
                             IdPermiso = 159,
                             NombrePermiso = "DASHBOARD",
+                            RutaImagen = "pi pi-chart-bar",
                             RutaModulo = "siil/karve/dashboard"
                         },
                         new
                         {
                             IdPermiso = 160,
                             NombrePermiso = "DASHBOARD",
+                            RutaImagen = "pi pi-chart-bar",
                             RutaModulo = "siil/vikingo/dashboard"
                         },
                         new
                         {
                             IdPermiso = 161,
                             NombrePermiso = "DASHBOARD",
+                            RutaImagen = "pi pi-chart-bar",
                             RutaModulo = "siil/drakkar/dashboard"
                         },
                         new
                         {
                             IdPermiso = 162,
                             NombrePermiso = "DASHBOARD",
+                            RutaImagen = "pi pi-chart-bar",
                             RutaModulo = "siil/letca/dashboard"
                         },
                         new
@@ -905,7 +914,8 @@ namespace APIV2.Migrations
                         new
                         {
                             IdPermiso = 171,
-                            NombrePermiso = "TRAFICO"
+                            NombrePermiso = "TRAFICO",
+                            RutaImagen = "pi pi-truck"
                         },
                         new
                         {
@@ -939,12 +949,14 @@ namespace APIV2.Migrations
                             IdPermiso = 176,
                             NombrePermiso = "PROGRAMACION DE VIAJES",
                             Padre = 171,
+                            RutaImagen = "pi pi-bell",
                             RutaModulo = "siil/vikingo/trafico/programaciondeviajes"
                         },
                         new
                         {
                             IdPermiso = 177,
-                            NombrePermiso = "COMERCIAL"
+                            NombrePermiso = "COMERCIAL",
+                            RutaImagen = "pi pi-money-bill"
                         },
                         new
                         {
@@ -1086,7 +1098,8 @@ namespace APIV2.Migrations
                         new
                         {
                             IdPermiso = 199,
-                            NombrePermiso = "TRAFICO"
+                            NombrePermiso = "TRAFICO",
+                            RutaImagen = "pi pi-truck"
                         },
                         new
                         {
@@ -1120,12 +1133,14 @@ namespace APIV2.Migrations
                             IdPermiso = 204,
                             NombrePermiso = "PROGRAMACION DE VIAJES",
                             Padre = 199,
+                            RutaImagen = "pi-bell",
                             RutaModulo = "siil/drakkar/trafico/programaciondeviajes"
                         },
                         new
                         {
                             IdPermiso = 205,
-                            NombrePermiso = "COMERCIAL"
+                            NombrePermiso = "COMERCIAL",
+                            RutaImagen = "pi pi-money-bill"
                         },
                         new
                         {
@@ -1267,7 +1282,8 @@ namespace APIV2.Migrations
                         new
                         {
                             IdPermiso = 227,
-                            NombrePermiso = "TRAFICO"
+                            NombrePermiso = "TRAFICO",
+                            RutaImagen = "pi pi-truck"
                         },
                         new
                         {
@@ -1301,12 +1317,14 @@ namespace APIV2.Migrations
                             IdPermiso = 232,
                             NombrePermiso = "PROGRAMACION DE VIAJES",
                             Padre = 227,
+                            RutaImagen = "pi-bell",
                             RutaModulo = "siil/letca/trafico/programaciondeviajes"
                         },
                         new
                         {
                             IdPermiso = 233,
-                            NombrePermiso = "COMERCIAL"
+                            NombrePermiso = "COMERCIAL",
+                            RutaImagen = "pi pi-money-bill"
                         },
                         new
                         {
@@ -1448,7 +1466,8 @@ namespace APIV2.Migrations
                         new
                         {
                             IdPermiso = 255,
-                            NombrePermiso = "TRAFICO"
+                            NombrePermiso = "TRAFICO",
+                            RutaImagen = "pi pi-truck"
                         },
                         new
                         {
@@ -1482,12 +1501,14 @@ namespace APIV2.Migrations
                             IdPermiso = 260,
                             NombrePermiso = "PROGRAMACION DE VIAJES",
                             Padre = 255,
+                            RutaImagen = "pi-bell",
                             RutaModulo = "siil/karve/trafico/programaciondeviajes"
                         },
                         new
                         {
                             IdPermiso = 261,
-                            NombrePermiso = "COMERCIAL"
+                            NombrePermiso = "COMERCIAL",
+                            RutaImagen = "pi pi-money-bill"
                         },
                         new
                         {
@@ -1705,6 +1726,195 @@ namespace APIV2.Migrations
                     b.HasIndex("IdUsuario");
 
                     b.ToTable("PermisosExtra");
+                });
+
+            modelBuilder.Entity("APIV2.Models.ProgramacionDeViajesVista", b =>
+                {
+                    b.Property<string>("Asignacion")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("asignacion");
+
+                    b.Property<string>("Cliente")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("cliente");
+
+                    b.Property<double?>("Comision")
+                        .HasColumnType("float")
+                        .HasColumnName("comision");
+
+                    b.Property<string>("DestinosEstadosCuidad")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("destinosEstadosCuidad");
+
+                    b.Property<string>("EcoIngresa")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("EcoIngresa");
+
+                    b.Property<string>("EcoRetira")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("ecoRetira");
+
+                    b.Property<string>("EcoRuta")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("ecoRuta");
+
+                    b.Property<string>("Ejecutivo")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("ejecutivo");
+
+                    b.Property<DateTime?>("Entrega")
+                        .HasColumnType("datetime")
+                        .HasColumnName("Entrega");
+
+                    b.Property<string>("EnvioAsignacion")
+                        .HasMaxLength(2)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("EnvioAsignacion");
+
+                    b.Property<string>("EnvioCcp")
+                        .HasMaxLength(2)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("EnvioCCP");
+
+                    b.Property<string>("EnvioCita")
+                        .HasMaxLength(2)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("EnvioCita");
+
+                    b.Property<string>("EnvioDocumentos")
+                        .HasMaxLength(2)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("EnvioDocumentos");
+
+                    b.Property<string>("EnvioPod")
+                        .HasMaxLength(250)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(250)")
+                        .HasColumnName("envioPOD");
+
+                    b.Property<int?>("Estatus")
+                        .HasColumnType("int")
+                        .HasColumnName("estatus");
+
+                    b.Property<DateTime?>("Fecha")
+                        .HasColumnType("datetime")
+                        .HasColumnName("fecha");
+
+                    b.Property<int>("Folio")
+                        .HasColumnType("int")
+                        .HasColumnName("folio");
+
+                    b.Property<double?>("Gasto")
+                        .HasColumnType("float")
+                        .HasColumnName("gasto");
+
+                    b.Property<DateTime?>("HoraCita")
+                        .HasColumnType("datetime")
+                        .HasColumnName("HoraCita");
+
+                    b.Property<DateTime?>("LlegadaPlanta")
+                        .HasColumnType("datetime")
+                        .HasColumnName("LlegadaPlanta");
+
+                    b.Property<string>("MercanciaDescripcion")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("mercanciaDescripcion");
+
+                    b.Property<string>("NombreDestino")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("nombre_destino");
+
+                    b.Property<string>("NombreOperador")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("nombre_operador");
+
+                    b.Property<string>("NombreOrigen")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("nombre_origen");
+
+                    b.Property<string>("NumeroConvenio")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("numero_convenio");
+
+                    b.Property<string>("NumeroViaje")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("numero_viaje");
+
+                    b.Property<string>("Operacion")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("Operacion");
+
+                    b.Property<string>("OperadorIngresa")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("operadorIngresa");
+
+                    b.Property<string>("SIngreso")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("sIngreso");
+
+                    b.Property<DateTime?>("SalidaPatio")
+                        .HasColumnType("datetime")
+                        .HasColumnName("SalidaPatio");
+
+                    b.Property<string>("Temperatura")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("temperatura");
+
+                    b.Property<string>("citaTerminal")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("citaTerminal");
+
+                    b.Property<string>("comentarios")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("comentarios");
+
+                    b.Property<int?>("idEmpresa")
+                        .HasColumnType("int")
+                        .HasColumnName("empresaId");
+
+                    b.Property<string>("operadorRetira")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("operadorRetira");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("VistaProgramacionViajes", (string)null);
                 });
 
             modelBuilder.Entity("APIV2.Models.ProgramacionViaje", b =>
@@ -2710,6 +2920,9 @@ namespace APIV2.Migrations
                     b.Property<string>("RutaModulo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ruta_icono")
+                        .HasColumnType("nvarchar(max)");
+
                     b.ToTable("JerarquiaDeRolesSP", null, t =>
                         {
                             t.ExcludeFromMigrations();
@@ -2735,6 +2948,9 @@ namespace APIV2.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RutaModulo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ruta_icono")
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("ObtenerTodosLosPermisosAdministrador", null, t =>

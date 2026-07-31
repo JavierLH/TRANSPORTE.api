@@ -37,6 +37,8 @@ namespace API.DTOs.Services
         public string RutaModulo { get; set; }
         public int? Padre { get; set; }
 
+        public string? rutaImagen { get; set; }
+
         public List<string> Funciones { get; set; } = new List<string>();
 
         public List<PermisoJerarquicoDto> Hijos { get; set; } = new List<PermisoJerarquicoDto>();

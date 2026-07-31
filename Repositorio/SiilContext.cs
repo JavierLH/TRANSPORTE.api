@@ -79,7 +79,7 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<EstatusViaje> EstatusViajes { get; set; }
     
-    public virtual DbSet<ProgramacionDeViajesVista> ProgramacionDeViajesVista { get; set; }
+    public virtual DbSet<ProgramacionDeViajesVista> programacionDeViajesVista { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -90,7 +90,7 @@ public partial class SiilContext : DbContext
         modelBuilder.Entity<VtEstatusViaje>(entity => entity.HasNoKey().ToView("vt_EstatusViaje"));
         modelBuilder.Entity<VtProgramacionViajesWithConvenio>(entity => entity.HasNoKey().ToView("vt_ProgramacionViajesWithConvenios"));
 
-        modelBuilder.Entity<ProgramacionDeViajesVista>(entity => entity.HasNoKey().ToView("ProgramacionDeViajes"));
+        modelBuilder.Entity<ProgramacionDeViajesVista>(entity => entity.HasNoKey().ToView("VistaProgramacionViajes"));
 
         // Configuración para SP 1
         modelBuilder.Entity<JerarquiaDeRolesSP>()
@@ -193,10 +193,10 @@ public partial class SiilContext : DbContext
         // Verifica si la propiedad 'Padre' se llama 'Padre', 'PadreId' o 'padre' en tu modelo.
         // Verifica si 'RutaModulo' se llama 'RutaModulo' o 'ruta_modulo'.
         modelBuilder.Entity<Permiso>().HasData(
-            new Permiso { IdPermiso = 159, NombrePermiso = "DASHBOARD", RutaModulo = "siil/karve/dashboard", Padre = null },
-            new Permiso { IdPermiso = 160, NombrePermiso = "DASHBOARD", RutaModulo = "siil/vikingo/dashboard", Padre = null },
-            new Permiso { IdPermiso = 161, NombrePermiso = "DASHBOARD", RutaModulo = "siil/drakkar/dashboard", Padre = null },
-            new Permiso { IdPermiso = 162, NombrePermiso = "DASHBOARD", RutaModulo = "siil/letca/dashboard", Padre = null },
+            new Permiso { IdPermiso = 159, NombrePermiso = "DASHBOARD", RutaModulo = "siil/karve/dashboard", Padre = null, RutaImagen="pi pi-chart-bar" },
+            new Permiso { IdPermiso = 160, NombrePermiso = "DASHBOARD", RutaModulo = "siil/vikingo/dashboard", Padre = null, RutaImagen = "pi pi-chart-bar" },
+            new Permiso { IdPermiso = 161, NombrePermiso = "DASHBOARD", RutaModulo = "siil/drakkar/dashboard", Padre = null, RutaImagen = "pi pi-chart-bar" },
+            new Permiso { IdPermiso = 162, NombrePermiso = "DASHBOARD", RutaModulo = "siil/letca/dashboard", Padre = null, RutaImagen = "pi pi-chart-bar" },
             new Permiso { IdPermiso = 163, NombrePermiso = "REPORTES Y ANALITICAS VK", RutaModulo = null, Padre = null },
             new Permiso { IdPermiso = 164, NombrePermiso = "DASHBOARD", RutaModulo = "siil/vikingo/reportes_analiticas/dashboard", Padre = 163 },
             new Permiso { IdPermiso = 165, NombrePermiso = "REGISTROS", RutaModulo = "siil/vikingo/reportes_analiticas/registros", Padre = 163 },
@@ -205,13 +205,13 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 168, NombrePermiso = "TIPO DE MERCANCIA", RutaModulo = "siil/vikingo/reportes_analiticas/tipomercancia", Padre = 163 },
             new Permiso { IdPermiso = 169, NombrePermiso = "VIAJES POR UNIDAD", RutaModulo = "siil/vikingo/reportes_analiticas/viajesporunidad", Padre = 163 },
             new Permiso { IdPermiso = 170, NombrePermiso = "TIPO DE UNIDAD", RutaModulo = "siil/vikingo/reportes_analiticas/tipounidad", Padre = 163 },
-            new Permiso { IdPermiso = 171, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 171, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null, RutaImagen= "pi pi-truck" },
             new Permiso { IdPermiso = 172, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 171 },
             new Permiso { IdPermiso = 173, NombrePermiso = "CONTENEDORES", RutaModulo = "siil/vikingo/trafico/catalogo/contenedores", Padre = 172 },
             new Permiso { IdPermiso = 174, NombrePermiso = "OPERADORES", RutaModulo = "siil/vikingo/trafico/catalogo/operadores", Padre = 172 },
             new Permiso { IdPermiso = 175, NombrePermiso = "CLIENTES FACTURA", RutaModulo = "siil/vikingo/trafico/catalogo/clientesfactura", Padre = 172 },
-            new Permiso { IdPermiso = 176, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/vikingo/trafico/programaciondeviajes", Padre = 171 },
-            new Permiso { IdPermiso = 177, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 176, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/vikingo/trafico/programaciondeviajes", Padre = 171, RutaImagen = "pi pi-bell" },
+            new Permiso { IdPermiso = 177, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null, RutaImagen= "pi pi-money-bill" },
             new Permiso { IdPermiso = 178, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 177 },
             new Permiso { IdPermiso = 179, NombrePermiso = "CLAUSULAS", RutaModulo = "siil/vikingo/comercial/catalogo/clausulas", Padre = 178 },
             new Permiso { IdPermiso = 180, NombrePermiso = "DESTINOS", RutaModulo = "siil/vikingo/comercial/catalogo/destinos", Padre = 178 },
@@ -233,13 +233,13 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 196, NombrePermiso = "TIPO DE MERCANCIA", RutaModulo = "siil/drakkar/reportes_analiticas/tipomercancia", Padre = 191 },
             new Permiso { IdPermiso = 197, NombrePermiso = "VIAJES POR UNIDAD", RutaModulo = "siil/drakkar/reportes_analiticas/viajesporunidad", Padre = 191 },
             new Permiso { IdPermiso = 198, NombrePermiso = "TIPO DE UNIDAD", RutaModulo = "siil/drakkar/reportes_analiticas/tipounidad", Padre = 191 },
-            new Permiso { IdPermiso = 199, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 199, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null, RutaImagen = "pi pi-truck" },
             new Permiso { IdPermiso = 200, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 199 },
             new Permiso { IdPermiso = 201, NombrePermiso = "CONTENEDORES", RutaModulo = "siil/drakkar/trafico/catalogo/contenedores", Padre = 200 },
             new Permiso { IdPermiso = 202, NombrePermiso = "OPERADORES", RutaModulo = "siil/drakkar/trafico/catalogo/operadores", Padre = 200 },
             new Permiso { IdPermiso = 203, NombrePermiso = "CLIENTES FACTURA", RutaModulo = "siil/drakkar/trafico/catalogo/clientesfactura", Padre = 200 },
-            new Permiso { IdPermiso = 204, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/drakkar/trafico/programaciondeviajes", Padre = 199 },
-            new Permiso { IdPermiso = 205, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 204, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/drakkar/trafico/programaciondeviajes", Padre = 199, RutaImagen = "pi-bell" },
+            new Permiso { IdPermiso = 205, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null, RutaImagen = "pi pi-money-bill" },
             new Permiso { IdPermiso = 206, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 205 },
             new Permiso { IdPermiso = 207, NombrePermiso = "CLAUSULAS", RutaModulo = "siil/drakkar/comercial/catalogo/clausulas", Padre = 206 },
             new Permiso { IdPermiso = 208, NombrePermiso = "DESTINOS", RutaModulo = "siil/drakkar/comercial/catalogo/destinos", Padre = 206 },
@@ -261,13 +261,13 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 224, NombrePermiso = "TIPO DE MERCANCIA", RutaModulo = "siil/letca/reportes_analiticas/tipomercancia", Padre = 219 },
             new Permiso { IdPermiso = 225, NombrePermiso = "VIAJES POR UNIDAD", RutaModulo = "siil/letca/reportes_analiticas/viajesporunidad", Padre = 219 },
             new Permiso { IdPermiso = 226, NombrePermiso = "TIPO DE UNIDAD", RutaModulo = "siil/letca/reportes_analiticas/tipounidad", Padre = 219 },
-            new Permiso { IdPermiso = 227, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 227, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null, RutaImagen = "pi pi-truck" },
             new Permiso { IdPermiso = 228, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 227 },
             new Permiso { IdPermiso = 229, NombrePermiso = "CONTENEDORES", RutaModulo = "siil/letca/trafico/catalogo/contenedores", Padre = 228 },
             new Permiso { IdPermiso = 230, NombrePermiso = "OPERADORES", RutaModulo = "siil/letca/trafico/catalogo/operadores", Padre = 228 },
             new Permiso { IdPermiso = 231, NombrePermiso = "CLIENTES FACTURA", RutaModulo = "siil/letca/trafico/catalogo/clientesfactura", Padre = 228 },
-            new Permiso { IdPermiso = 232, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/letca/trafico/programaciondeviajes", Padre = 227 },
-            new Permiso { IdPermiso = 233, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 232, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/letca/trafico/programaciondeviajes", Padre = 227, RutaImagen = "pi-bell" },
+            new Permiso { IdPermiso = 233, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null, RutaImagen = "pi pi-money-bill" },
             new Permiso { IdPermiso = 234, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 233 },
             new Permiso { IdPermiso = 235, NombrePermiso = "CLAUSULAS", RutaModulo = "siil/letca/comercial/catalogo/clausulas", Padre = 234 },
             new Permiso { IdPermiso = 236, NombrePermiso = "DESTINOS", RutaModulo = "siil/letca/comercial/catalogo/destinos", Padre = 234 },
@@ -289,13 +289,13 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 252, NombrePermiso = "TIPO DE MERCANCIA", RutaModulo = "siil/karve/reportes_analiticas/tipomercancia", Padre = 247 },
             new Permiso { IdPermiso = 253, NombrePermiso = "VIAJES POR UNIDAD", RutaModulo = "siil/karve/reportes_analiticas/viajesporunidad", Padre = 247 },
             new Permiso { IdPermiso = 254, NombrePermiso = "TIPO DE UNIDAD", RutaModulo = "siil/karve/reportes_analiticas/tipounidad", Padre = 247 },
-            new Permiso { IdPermiso = 255, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 255, NombrePermiso = "TRAFICO", RutaModulo = null, Padre = null, RutaImagen = "pi pi-truck" },
             new Permiso { IdPermiso = 256, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 255 },
             new Permiso { IdPermiso = 257, NombrePermiso = "CONTENEDORES", RutaModulo = "siil/karve/trafico/catalogo/contenedores", Padre = 256 },
             new Permiso { IdPermiso = 258, NombrePermiso = "OPERADORES", RutaModulo = "siil/karve/trafico/catalogo/operadores", Padre = 256 },
             new Permiso { IdPermiso = 259, NombrePermiso = "CLIENTES FACTURA", RutaModulo = "siil/karve/trafico/catalogo/clientesfactura", Padre = 256 },
-            new Permiso { IdPermiso = 260, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/karve/trafico/programaciondeviajes", Padre = 255 },
-            new Permiso { IdPermiso = 261, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 260, NombrePermiso = "PROGRAMACION DE VIAJES", RutaModulo = "siil/karve/trafico/programaciondeviajes", Padre = 255 , RutaImagen = "pi-bell" },
+            new Permiso { IdPermiso = 261, NombrePermiso = "COMERCIAL", RutaModulo = null, Padre = null, RutaImagen = "pi pi-money-bill" },
             new Permiso { IdPermiso = 262, NombrePermiso = "CATALOGO", RutaModulo = null, Padre = 261 },
             new Permiso { IdPermiso = 263, NombrePermiso = "CLAUSULAS", RutaModulo = "siil/karve/comercial/catalogo/clausulas", Padre = 262 },
             new Permiso { IdPermiso = 264, NombrePermiso = "DESTINOS", RutaModulo = "siil/karve/comercial/catalogo/destinos", Padre = 262 },
@@ -327,6 +327,7 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 291, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/karve/trafico/catalogo/ejecutivos", Padre = 256 },
             new Permiso { IdPermiso = 292, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/drakkar/trafico/catalogo/ejecutivos", Padre = 200 },
             new Permiso { IdPermiso = 293, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/letca/trafico/catalogo/ejecutivos", Padre = 228 }
+
 
 
 

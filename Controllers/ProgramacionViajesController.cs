@@ -117,18 +117,14 @@ namespace API.Controllers
             return Ok(resultados);
         }
 
-        // GET: api/ProgramacionViajes/filtrar-vista
-        [HttpGet("filtrar-vista")]
-        public async Task<ActionResult<ResultadoPaginado<ProgramacionDeViajesVista>>> FiltrarVista(
-            [FromQuery] DateTime? fechaInicio,
-            [FromQuery] DateTime? fechaFin,
-            [FromQuery] int idEmpresa,
-            [FromQuery] int pagina,
-            [FromQuery] int tamanoPagina)
+        // GET: api/ProgramacionViajes/filtrar-vista-completa
+        [HttpGet("filtrar-vista-completa")]
+        public async Task<ActionResult<IEnumerable<ProgramacionDeViajesVista>>> FiltrarVistaCompleta(
+            [FromQuery] DateTime fechaInicio,
+            [FromQuery] DateTime fechaFin,
+            [FromQuery] int idEmpresa)
         {
-            var resultados = await _viajesService.obtenerViajesPorFechaDeLaVista(
-                fechaInicio, fechaFin, idEmpresa, pagina, tamanoPagina);
-
+            var resultados = await _viajesService.obtenerViajesPorFechaDeLaVista(fechaInicio, fechaFin, idEmpresa);
             return Ok(resultados);
         }
 

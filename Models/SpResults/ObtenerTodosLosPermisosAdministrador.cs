@@ -14,5 +14,7 @@
 
         public string? NombreFuncion { get; set; }
 
+        public string? ruta_icono { get; set; }
+
     }
 }
