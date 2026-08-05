@@ -24,25 +24,40 @@ namespace APIV2.Models
         [Column("fecha", TypeName = "datetime")]
         public DateTime? Fecha { get; set; }
 
+        [Column("idCliente")]
+        public int? IdCliente { get; set; }
+
         [Column("cliente")]
         [StringLength(100)]
         [Unicode(false)]
         public string? Cliente { get; set; }
+
+        [Column("IdEjecutivo")]
+        public int? IdEjecutivo { get; set; }
 
         [Column("ejecutivo")]
         [StringLength(100)]
         [Unicode(false)]
         public string? Ejecutivo { get; set; }
 
+        [Column("idEquipoEcoRuta")]
+        public int? IdEquipoEcoRuta { get; set; }
+
         [Column("ecoRuta")]
         [StringLength(50)]
         [Unicode(false)]
         public string? EcoRuta { get; set; }
 
+        [Column("idOperador")]
+        public int? IdOperador { get; set; }
+
         [Column("nombre_operador")]
         [StringLength(100)]
         [Unicode(false)]
         public string? NombreOperador { get; set; }
+
+        [Column("idEcoRetira")]
+        public int? IdEcoRetira { get; set; }
 
         [Column("ecoRetira")]
         [StringLength(50)]
@@ -58,6 +73,9 @@ namespace APIV2.Models
         [StringLength(50)]
         [Unicode(false)]
         public string? Operacion { get; set; }
+
+        [Column("idOrigen")]
+        public int? IdOrigen { get; set; }
 
         [Column("nombre_origen")]
         [StringLength(100)]
@@ -148,7 +166,7 @@ namespace APIV2.Models
 
 
         [Column("operadorRetira")]
-        public string? operadorRetira {  get; set; }
+        public string? operadorRetira { get; set; }
 
         [Column("citaTerminal")]
         public string? citaTerminal { get; set; }

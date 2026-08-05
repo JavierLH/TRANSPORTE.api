@@ -268,5 +268,44 @@ namespace API.Services
                 .ToListAsync();
         }
 
+        public async Task<List<ProgramacionDeViajesVista>> obtenerViajesPorFiltrosDeLaVistaOrigenEstatusViajeClienteEjecutivo(
+           int idEmpresa,
+           DateTime? fechaInicio,
+           DateTime? fechaFin,
+           int? idOrigen,
+           int? idEstatus,
+           int? idCliente,
+           int? idEjecutivo)
+        {
+            var query = _siilcontext.programacionDeViajesVista
+                .Where(v => v.idEmpresa == idEmpresa);
+
+            if (fechaInicio.HasValue)
+            {
+                var inicio = fechaInicio.Value.Date;
+                query = query.Where(v => v.Fecha >= inicio);
+            }
+
+            if (fechaFin.HasValue)
+            {
+                var finExclusivo = fechaFin.Value.Date.AddDays(1);
+                query = query.Where(v => v.Fecha < finExclusivo);
+            }
+
+            if (idOrigen.HasValue)
+                query = query.Where(v => v.IdOrigen == idOrigen.Value);
+
+            if (idEstatus.HasValue)
+                query = query.Where(v => v.Estatus == idEstatus.Value);
+
+            if (idCliente.HasValue)
+                query = query.Where(v => v.IdCliente == idCliente.Value);
+
+            if (idEjecutivo.HasValue)
+                query = query.Where(v => v.IdEjecutivo == idEjecutivo.Value);
+
+            return await query.ToListAsync();
+        }
+
     }
 }

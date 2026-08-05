@@ -1829,6 +1829,30 @@ namespace APIV2.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("HoraCita");
 
+                    b.Property<int?>("IdCliente")
+                        .HasColumnType("int")
+                        .HasColumnName("idCliente");
+
+                    b.Property<int?>("IdEcoRetira")
+                        .HasColumnType("int")
+                        .HasColumnName("idEcoRetira");
+
+                    b.Property<int?>("IdEjecutivo")
+                        .HasColumnType("int")
+                        .HasColumnName("IdEjecutivo");
+
+                    b.Property<int?>("IdEquipoEcoRuta")
+                        .HasColumnType("int")
+                        .HasColumnName("idEquipoEcoRuta");
+
+                    b.Property<int?>("IdOperador")
+                        .HasColumnType("int")
+                        .HasColumnName("idOperador");
+
+                    b.Property<int?>("IdOrigen")
+                        .HasColumnType("int")
+                        .HasColumnName("idOrigen");
+
                     b.Property<DateTime?>("LlegadaPlanta")
                         .HasColumnType("datetime")
                         .HasColumnName("LlegadaPlanta");
@@ -1982,7 +2006,8 @@ namespace APIV2.Migrations
                         .HasMaxLength(2)
                         .IsUnicode(false)
                         .HasColumnType("varchar(2)")
-                        .HasColumnName("EnvioCCP");
+                        .HasColumnName("EnvioCCP")
+                        .HasAnnotation("Relational:JsonPropertyName", "envioCCP");
 
                     b.Property<string>("EnvioCita")
                         .HasMaxLength(2)
@@ -3235,6 +3260,235 @@ namespace APIV2.Migrations
                             Roladministrador = true,
                             Usuario = "sJAVIER"
                         });
+                });
+
+            modelBuilder.Entity("APIV2.Models.VikViaje", b =>
+                {
+                    b.Property<int>("IdGuia")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("nIdGuia");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdGuia"));
+
+                    b.Property<string>("Agencia")
+                        .HasMaxLength(40)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("sAgencia");
+
+                    b.Property<string>("Carga")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("sCarga");
+
+                    b.Property<double?>("Casetas")
+                        .HasColumnType("float")
+                        .HasColumnName("fCasetas");
+
+                    b.Property<double?>("CasetasFactura")
+                        .HasColumnType("float")
+                        .HasColumnName("fCasetasFact");
+
+                    b.Property<string>("ClaveCliente")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("nCveCliente");
+
+                    b.Property<string>("Cliente")
+                        .HasMaxLength(150)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("sCliente");
+
+                    b.Property<string>("ClienteEntrega")
+                        .HasMaxLength(150)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("sClienteEntrega");
+
+                    b.Property<string>("ClienteOrigen")
+                        .HasMaxLength(150)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("sClienteOrigen");
+
+                    b.Property<string>("ComentarioViaje")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("sComentarioViaje");
+
+                    b.Property<string>("Config")
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("sConfig");
+
+                    b.Property<string>("Contenedor")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("sContenedor");
+
+                    b.Property<string>("Convenio")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("sConvenio");
+
+                    b.Property<string>("Despacha")
+                        .HasMaxLength(40)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("sDespacha");
+
+                    b.Property<string>("Destino")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("sDestino");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("sEstado");
+
+                    b.Property<string>("Evidencia")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("sEvidencia");
+
+                    b.Property<string>("Factura")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("sFactura");
+
+                    b.Property<DateOnly?>("FechaFactura")
+                        .HasColumnType("date")
+                        .HasColumnName("dFechaFactura");
+
+                    b.Property<DateOnly?>("FechaGuia")
+                        .HasColumnType("date")
+                        .HasColumnName("dFechaGuia");
+
+                    b.Property<DateOnly?>("FechaIda")
+                        .HasColumnType("date")
+                        .HasColumnName("dFechaIda");
+
+                    b.Property<DateOnly?>("FechaVuelta")
+                        .HasColumnType("date")
+                        .HasColumnName("dFechaVuelta");
+
+                    b.Property<double?>("Fletes")
+                        .HasColumnType("float")
+                        .HasColumnName("fFletes");
+
+                    b.Property<double?>("FletesFactura")
+                        .HasColumnType("float")
+                        .HasColumnName("fFletesFact");
+
+                    b.Property<double?>("Iva")
+                        .HasColumnType("float")
+                        .HasColumnName("fIVA");
+
+                    b.Property<int?>("Liquidacion")
+                        .HasColumnType("int")
+                        .HasColumnName("nLiquidacion");
+
+                    b.Property<string>("Mercancia")
+                        .HasMaxLength(25)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(25)")
+                        .HasColumnName("sMercancia");
+
+                    b.Property<string>("ObservacionesProd")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("sObservacionesProd");
+
+                    b.Property<string>("ObservacionesRef")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("sObservacionesRef");
+
+                    b.Property<string>("Operador")
+                        .HasMaxLength(80)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(80)")
+                        .HasColumnName("sOperador");
+
+                    b.Property<string>("Origen")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("sOrigen");
+
+                    b.Property<double?>("Otros")
+                        .HasColumnType("float")
+                        .HasColumnName("fOtros");
+
+                    b.Property<double?>("OtrosFactura")
+                        .HasColumnType("float")
+                        .HasColumnName("fOtrosFact");
+
+                    b.Property<string>("Pedimento")
+                        .HasMaxLength(40)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(40)")
+                        .HasColumnName("sPedimento");
+
+                    b.Property<double?>("Retencion")
+                        .HasColumnType("float")
+                        .HasColumnName("fRetencion");
+
+                    b.Property<double?>("Seguros")
+                        .HasColumnType("float")
+                        .HasColumnName("fSeguros");
+
+                    b.Property<double?>("SegurosFactura")
+                        .HasColumnType("float")
+                        .HasColumnName("fSegurosFact");
+
+                    b.Property<double?>("Subtotal")
+                        .HasColumnType("float")
+                        .HasColumnName("fSubtotal");
+
+                    b.Property<double?>("SubtotalFactura")
+                        .HasColumnType("float")
+                        .HasColumnName("fSubtotalFactura");
+
+                    b.Property<string>("Tipo")
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("sTipo");
+
+                    b.Property<double?>("TotalFactura")
+                        .HasColumnType("float")
+                        .HasColumnName("fTotalFactura");
+
+                    b.Property<double?>("TotalGuia")
+                        .HasColumnType("float")
+                        .HasColumnName("fTotalGuia");
+
+                    b.Property<string>("Tractor")
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("sTractor");
+
+                    b.Property<int?>("Viaje")
+                        .HasColumnType("int")
+                        .HasColumnName("nViaje");
+
+                    b.HasKey("IdGuia");
+
+                    b.ToTable("VIK_01_Viajes");
                 });
 
             modelBuilder.Entity("APIV2.Models.VtEstatusConvenio", b =>

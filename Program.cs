@@ -17,6 +17,8 @@ builder.Services.AddScoped<RolesService>();
 builder.Services.AddScoped<ProgramacionViajesService>();
 builder.Services.AddScoped<EmpresaService>();
 builder.Services.AddScoped<EjecutivosService>();
+builder.Services.AddScoped<ConvenioService>();
+builder.Services.AddScoped<PizarraService>();
 
 builder.Services.AddControllers();
 

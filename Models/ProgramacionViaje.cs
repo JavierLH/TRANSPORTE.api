@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace APIV2.Models;
 
@@ -208,5 +209,6 @@ public partial class ProgramacionViaje
     [Column("EnvioCCP")]
     [StringLength(2)]
     [Unicode(false)]
+    [JsonPropertyName("envioCCP")]
     public string? EnvioCcp { get; set; }
 }

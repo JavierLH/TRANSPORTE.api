@@ -124,7 +124,25 @@ namespace API.Controllers
             [FromQuery] DateTime fechaFin,
             [FromQuery] int idEmpresa)
         {
+
             var resultados = await _viajesService.obtenerViajesPorFechaDeLaVista(fechaInicio, fechaFin, idEmpresa);
+            return Ok(resultados);
+        }
+
+        // GET: api/ProgramacionViajes/filtrar-vista
+        [HttpGet("filtrar-vista")]
+        public async Task<ActionResult<IEnumerable<ProgramacionDeViajesVista>>> FiltrarVistaPorOrigenEstatusClienteEjecutivo(
+            [FromQuery] int idEmpresa,
+            [FromQuery] DateTime? fechaInicio,
+            [FromQuery] DateTime? fechaFin,
+            [FromQuery] int? idOrigen,
+            [FromQuery] int? idEstatus,
+            [FromQuery] int? idCliente,
+            [FromQuery] int? idEjecutivo)
+        {
+            var resultados = await _viajesService.obtenerViajesPorFiltrosDeLaVistaOrigenEstatusViajeClienteEjecutivo(
+                idEmpresa, fechaInicio, fechaFin, idOrigen, idEstatus, idCliente, idEjecutivo);
+
             return Ok(resultados);
         }
 

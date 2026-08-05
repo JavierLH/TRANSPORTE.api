@@ -48,7 +48,6 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<Origen> Origens { get; set; }
 
-
     public virtual DbSet<Patio> Patios { get; set; }
 
     public virtual DbSet<Permiso> Permisos { get; set; }
@@ -80,6 +79,8 @@ public partial class SiilContext : DbContext
     public virtual DbSet<EstatusViaje> EstatusViajes { get; set; }
     
     public virtual DbSet<ProgramacionDeViajesVista> programacionDeViajesVista { get; set; }
+    
+    public virtual DbSet<VikViaje> pizarraDeViajes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -327,10 +328,7 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 291, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/karve/trafico/catalogo/ejecutivos", Padre = 256 },
             new Permiso { IdPermiso = 292, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/drakkar/trafico/catalogo/ejecutivos", Padre = 200 },
             new Permiso { IdPermiso = 293, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/letca/trafico/catalogo/ejecutivos", Padre = 228 }
-
-
-
-
+            
             );
 
         // 7. ROLES_PERMISOS
