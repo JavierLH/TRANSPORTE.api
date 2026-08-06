@@ -14,11 +14,13 @@ namespace API.Services
     {
         private readonly SiilContext _context;
         private readonly RolesService _rolesService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsuariosSistemaService(SiilContext context, RolesService rolesService)
+        public UsuariosSistemaService(SiilContext context, RolesService rolesService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _rolesService = rolesService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IniciarSesionServicioDTO> buscarPorUsuarioYContraseña(UsuariosSistema usuarioSistema)
@@ -259,8 +261,43 @@ namespace API.Services
             return raices;
         }
         
-       
+        public async Task<bool> elUsuarioTienePermisoAlRecurso(string ruta_objetivo)
+        {
+            var idUsuarioClaim = _httpContextAccessor.HttpContext?.User.FindFirst("idUsuario")?.Value;
 
+            if (!int.TryParse(idUsuarioClaim, out int usuarioId))
+            {
+                return false;
+            }
+
+            var lista = await this._context.UsuariosSistemas
+                .Include(e => e.UsuarioEmpresaRols)
+                .ThenInclude(e => e.IdRolNavigation)
+                .ThenInclude(e => e.RolesPermisos)
+                .ThenInclude(e => e.IdPermisoNavigation)
+                .ToListAsync();
+
+            var usuarioActual = lista.FirstOrDefault(e => e.IdUsuario == usuarioId);
+
+            if (usuarioActual == null)
+            {
+                return false;
+            }
+
+            if (usuarioActual.Roladministrador)
+            {
+                return true;
+            }
+
+            var rutasPermitidas = usuarioActual.UsuarioEmpresaRols
+                .SelectMany(uer => uer.IdRolNavigation.RolesPermisos)
+                .Select(rp => rp.IdPermisoNavigation.RutaModulo)
+                .Where(ruta => !string.IsNullOrEmpty(ruta))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            return rutasPermitidas.Contains(ruta_objetivo, StringComparer.OrdinalIgnoreCase);
+        }
 
         public async Task<List<UsuarioTablaDTO>> obtenerTodosLosUsuariosTablaAsync()
         {

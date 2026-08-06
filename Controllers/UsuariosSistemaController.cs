@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Timers;
 
 namespace API.Controllers
 {
@@ -100,6 +101,8 @@ namespace API.Controllers
         {
             return await _context.UsuariosSistemas.ToListAsync();
         }
+
+       
 
         [HttpGet("admin/{id}")]
         //[AllowAnonymous]

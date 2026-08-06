@@ -12,6 +12,9 @@ builder.Services.AddDbContext<SiilContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<UsuariosSistemaService>();
 builder.Services.AddScoped<RolesService>();
 builder.Services.AddScoped<ProgramacionViajesService>();
