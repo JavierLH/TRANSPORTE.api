@@ -229,8 +229,8 @@ public partial class VtProgramacionViajesWithConvenio
 
     public int? IdEmpresa { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime? HoraCita { get; set; }
+    [Column(TypeName = "time")]
+    public TimeOnly? HoraCita { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? RegistroCalt { get; set; }

@@ -567,6 +567,143 @@ namespace APIV2.Migrations
                     b.HasIndex("IdTipoEquipo");
 
                     b.ToTable("Equipos");
+
+                    b.HasData(
+                        new
+                        {
+                            IdEquipo = 400,
+                            Clave = "L001",
+                            Descripcion = "L001",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 401,
+                            Clave = "L002",
+                            Descripcion = "L002",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 402,
+                            Clave = "L003",
+                            Descripcion = "L003",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 403,
+                            Clave = "L004",
+                            Descripcion = "L004",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 404,
+                            Clave = "L005",
+                            Descripcion = "L005",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 405,
+                            Clave = "L006",
+                            Descripcion = "L006",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 406,
+                            Clave = "L007",
+                            Descripcion = "L007",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 407,
+                            Clave = "L008",
+                            Descripcion = "L008",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 500,
+                            Clave = "20",
+                            Descripcion = "20",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 501,
+                            Clave = "21",
+                            Descripcion = "21",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 502,
+                            Clave = "23",
+                            Descripcion = "23",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 503,
+                            Clave = "24",
+                            Descripcion = "24",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 504,
+                            Clave = "25",
+                            Descripcion = "25",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 505,
+                            Clave = "26",
+                            Descripcion = "26",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 506,
+                            Clave = "30",
+                            Descripcion = "30",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        });
                 });
 
             modelBuilder.Entity("APIV2.Models.EquipoEmpresaCompartido", b =>
@@ -767,6 +904,9 @@ namespace APIV2.Migrations
 
             modelBuilder.Entity("APIV2.Models.Patio", b =>
                 {
+                    b.Property<int>("IdPatio")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descripcion")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -778,20 +918,404 @@ namespace APIV2.Migrations
                     b.Property<int?>("IdEstado")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdPatio")
+                    b.Property<int?>("IdTipoOperacion")
                         .HasColumnType("int");
 
-                    b.Property<string>("Operacion")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                    b.Property<int?>("IdTipoPatio")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Tipo")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                    b.HasKey("IdPatio");
 
-                    b.ToTable("Patios");
+                    b.ToTable("Patio");
+
+                    b.HasData(
+                        new
+                        {
+                            IdPatio = 1,
+                            Descripcion = "RICSA",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 2,
+                            Descripcion = "ICAVE T2",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 3,
+                            Descripcion = "CICE",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 4,
+                            Descripcion = "GOLMEX",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 5,
+                            Descripcion = "CIF",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 6,
+                            Descripcion = "ICAVE T2",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 2,
+                            IdTipoPatio = 20
+                        },
+                        new
+                        {
+                            IdPatio = 7,
+                            Descripcion = "CICE M7",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 2,
+                            IdTipoPatio = 20
+                        },
+                        new
+                        {
+                            IdPatio = 8,
+                            Descripcion = "CICE TMU",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoOperacion = 2,
+                            IdTipoPatio = 20
+                        },
+                        new
+                        {
+                            IdPatio = 9,
+                            Descripcion = "ICAVE ZAL FREPOOL",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 10,
+                            Descripcion = "CCI ZAL",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 11,
+                            Descripcion = "GOLMEX AGM",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 12,
+                            Descripcion = "GOLMEX 13.5",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 13,
+                            Descripcion = "CCIS",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 14,
+                            Descripcion = "ISL",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 15,
+                            Descripcion = "TMM",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 16,
+                            Descripcion = "TERRAPORTS",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 17,
+                            Descripcion = "CONTAINER PARK",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 18,
+                            Descripcion = "CIMA",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 19,
+                            Descripcion = "CONTENEDORES DEL GOLFO",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 20,
+                            Descripcion = "ICAVE SANTA FE",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 21,
+                            Descripcion = "CICE SAN JULIAN",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 22,
+                            Descripcion = "SEABORD",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 23,
+                            Descripcion = "TEAYL",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 24,
+                            Descripcion = "CONTAINER WASH",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 25,
+                            Descripcion = "GARCA",
+                            Estatus = 1,
+                            IdEstado = 28,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 26,
+                            Descripcion = "SSA PATIO EXTERNO 2",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 27,
+                            Descripcion = "NO APLICA",
+                            Estatus = 1
+                        },
+                        new
+                        {
+                            IdPatio = 28,
+                            Descripcion = "SSA PATIO EXTERNO 1",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 29,
+                            Descripcion = "IMPALA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 30,
+                            Descripcion = "HADRON",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 31,
+                            Descripcion = "JACCER",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 32,
+                            Descripcion = "CIMA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 33,
+                            Descripcion = "CIMA TEC 2 ASIPONA ISL",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 34,
+                            Descripcion = "NALIGOVI",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 35,
+                            Descripcion = "MCT",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 36,
+                            Descripcion = "CASA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 37,
+                            Descripcion = "ACOMAN",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 38,
+                            Descripcion = "SLTC",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 39,
+                            Descripcion = "ALCAM PACIFICO",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 40,
+                            Descripcion = "ALMAN",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 41,
+                            Descripcion = "HAZESA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 42,
+                            Descripcion = "SICE GROUP",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoPatio = 21
+                        },
+                        new
+                        {
+                            IdPatio = 43,
+                            Descripcion = "OCUPA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 44,
+                            Descripcion = "CONTECON",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 45,
+                            Descripcion = "TIMSA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 46,
+                            Descripcion = "FRIMAN",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        },
+                        new
+                        {
+                            IdPatio = 47,
+                            Descripcion = "SSA",
+                            Estatus = 1,
+                            IdEstado = 7,
+                            IdTipoOperacion = 1,
+                            IdTipoPatio = 19
+                        });
                 });
 
             modelBuilder.Entity("APIV2.Models.Permiso", b =>
@@ -1825,9 +2349,8 @@ namespace APIV2.Migrations
                         .HasColumnType("float")
                         .HasColumnName("gasto");
 
-                    b.Property<DateTime?>("HoraCita")
-                        .HasColumnType("datetime")
-                        .HasColumnName("HoraCita");
+                    b.Property<TimeOnly?>("HoraCita")
+                        .HasColumnType("time");
 
                     b.Property<int?>("IdCliente")
                         .HasColumnType("int")
@@ -2051,8 +2574,8 @@ namespace APIV2.Migrations
                     b.Property<double?>("Gasto")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("HoraCita")
-                        .HasColumnType("datetime");
+                    b.Property<TimeOnly?>("HoraCita")
+                        .HasColumnType("time");
 
                     b.Property<int?>("HorasEstadiasCliente")
                         .HasColumnType("int");
@@ -2120,9 +2643,8 @@ namespace APIV2.Migrations
                     b.Property<int?>("IdOrigen")
                         .HasColumnType("int");
 
-                    b.Property<string>("IdPatio")
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
+                    b.Property<int?>("IdPatio")
+                        .HasColumnType("int");
 
                     b.Property<int?>("IdPatio2")
                         .HasColumnType("int");
@@ -2921,6 +3443,12 @@ namespace APIV2.Migrations
                             IdSisTipo = 6,
                             Descripcion = "GENERADOR",
                             Estatus = 1
+                        },
+                        new
+                        {
+                            IdSisTipo = 7,
+                            Descripcion = "RABON",
+                            Estatus = 1
                         });
                 });
 
@@ -3148,6 +3676,42 @@ namespace APIV2.Migrations
                             IdTipoMercancia = 24,
                             Descripcion = "REFRIGERADA/GENERAL",
                             IdEmpresa = 4
+                        });
+                });
+
+            modelBuilder.Entity("APIV2.Models.TipoPatio", b =>
+                {
+                    b.Property<int>("idTipoPatio")
+                        .HasColumnType("int");
+
+                    b.Property<string>("descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("estatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("idTipoPatio");
+
+                    b.ToTable("TipoPatio");
+
+                    b.HasData(
+                        new
+                        {
+                            idTipoPatio = 19,
+                            descripcion = "RETIROS",
+                            estatus = 1
+                        },
+                        new
+                        {
+                            idTipoPatio = 20,
+                            descripcion = "INGRESOS",
+                            estatus = 1
+                        },
+                        new
+                        {
+                            idTipoPatio = 21,
+                            descripcion = "VACIOS",
+                            estatus = 1
                         });
                 });
 
@@ -3760,8 +4324,8 @@ namespace APIV2.Migrations
                     b.Property<double?>("Gasto")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("HoraCita")
-                        .HasColumnType("datetime");
+                    b.Property<TimeOnly?>("HoraCita")
+                        .HasColumnType("time");
 
                     b.Property<int?>("IdCiudad")
                         .HasColumnType("int");

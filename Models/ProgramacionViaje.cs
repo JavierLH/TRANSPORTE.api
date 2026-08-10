@@ -52,8 +52,7 @@ public partial class ProgramacionViaje
     [Unicode(false)]
     public string? Asignacion { get; set; }
 
-    [Unicode(false)]
-    public string? IdPatio { get; set; }
+    public int? IdPatio { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? Ingreso { get; set; }
@@ -156,8 +155,8 @@ public partial class ProgramacionViaje
 
     public int? EstadiasClienteGeneradas { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime? HoraCita { get; set; }
+    [Column(TypeName = "time")]
+    public TimeOnly? HoraCita { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? RegistroCalt { get; set; }

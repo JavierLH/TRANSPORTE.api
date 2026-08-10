@@ -110,6 +110,25 @@ public partial class SiilContext : DbContext
         // ==========================================
         // DATOS SEMILLA (SEED DATA)
         // ==========================================
+        modelBuilder.Entity<Equipo>().HasData(
+            new Equipo { IdEquipo = 400, Clave = "L001", IdTipoEquipo = 3, Descripcion=  "L001", Placa = null, Serie=null,   Marca=null, Modelo=null, Anio=null, Estatus=1, IdEmpresa=4 },
+            new Equipo { IdEquipo = 401, Clave = "L002", IdTipoEquipo = 3, Descripcion = "L002", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 402, Clave = "L003", IdTipoEquipo = 3, Descripcion = "L003", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 403, Clave = "L004", IdTipoEquipo = 3, Descripcion = "L004", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 404, Clave = "L005", IdTipoEquipo = 3, Descripcion = "L005", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 405, Clave = "L006", IdTipoEquipo = 3, Descripcion = "L006", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 406, Clave = "L007", IdTipoEquipo = 3, Descripcion = "L007", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 407, Clave = "L008", IdTipoEquipo = 3, Descripcion = "L008", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+
+            new Equipo { IdEquipo = 500, Clave = "20", IdTipoEquipo = 7, Descripcion = "20", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 501, Clave = "21", IdTipoEquipo = 7, Descripcion = "21", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 502, Clave = "23", IdTipoEquipo = 7, Descripcion = "23", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 503, Clave = "24", IdTipoEquipo = 7, Descripcion = "24", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 504, Clave = "25", IdTipoEquipo = 7, Descripcion = "25", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 505, Clave = "26", IdTipoEquipo = 7, Descripcion = "26", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 506, Clave = "30", IdTipoEquipo = 7, Descripcion = "30", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 }
+
+            );
 
         // Estatus Viaje
         modelBuilder.Entity<EstatusViaje>().HasData(
@@ -180,6 +199,74 @@ public partial class SiilContext : DbContext
         modelBuilder.Entity<UsuariosSistema>().HasData(
             new UsuariosSistema { IdUsuario = 3, Nombre = "TRAFICO1", ApPaterno = "TRAFICO", ApMaterno = "TRAFICO", Usuario = "TRAFICO1", Contrasena = "123", Roladministrador = false },
             new UsuariosSistema { IdUsuario = 4, Nombre = "JAVIER", ApPaterno = null, ApMaterno = null, Usuario = "sJAVIER", Contrasena = "123", Roladministrador = true }
+        );
+
+        modelBuilder.Entity<TipoPatio>().HasData(
+            new TipoPatio { idTipoPatio = 19, descripcion = "RETIROS", estatus = 1},
+            new TipoPatio { idTipoPatio = 20, descripcion = "INGRESOS", estatus = 1 },
+            new TipoPatio { idTipoPatio = 21, descripcion = "VACIOS", estatus = 1 }
+        );
+
+        modelBuilder.Entity<Patio>().HasData(
+            // RETIROS (IdTipoPatio = 19) - IMPORTACION (IdTipoOperacion = 1) - VERACRUZ (IdEstado = 28)
+            new Patio { IdPatio = 1, IdEstado = 28, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "RICSA", Estatus = 1 },
+            new Patio { IdPatio = 2, IdEstado = 28, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "ICAVE T2", Estatus = 1 },
+            new Patio { IdPatio = 3, IdEstado = 28, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "CICE", Estatus = 1 },
+            new Patio { IdPatio = 4, IdEstado = 28, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "GOLMEX", Estatus = 1 },
+            new Patio { IdPatio = 5, IdEstado = 28, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "CIF", Estatus = 1 },
+
+            // INGRESOS (IdTipoPatio = 20) - EXPORTACION (IdTipoOperacion = 2) - VERACRUZ
+            new Patio { IdPatio = 6, IdEstado = 28, IdTipoOperacion = 2, IdTipoPatio = 20, Descripcion = "ICAVE T2", Estatus = 1 },
+            new Patio { IdPatio = 7, IdEstado = 28, IdTipoOperacion = 2, IdTipoPatio = 20, Descripcion = "CICE M7", Estatus = 1 },
+            new Patio { IdPatio = 8, IdEstado = 28, IdTipoOperacion = 2, IdTipoPatio = 20, Descripcion = "CICE TMU", Estatus = 1 },
+
+            // VACIOS (IdTipoPatio = 21) - VERACRUZ
+            new Patio { IdPatio = 9, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "ICAVE ZAL FREPOOL", Estatus = 1 },
+            new Patio { IdPatio = 10, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CCI ZAL", Estatus = 1 },
+            new Patio { IdPatio = 11, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "GOLMEX AGM", Estatus = 1 },
+            new Patio { IdPatio = 12, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "GOLMEX 13.5", Estatus = 1 },
+            new Patio { IdPatio = 13, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CCIS", Estatus = 1 },
+            new Patio { IdPatio = 14, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "ISL", Estatus = 1 },
+            new Patio { IdPatio = 15, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "TMM", Estatus = 1 },
+            new Patio { IdPatio = 16, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "TERRAPORTS", Estatus = 1 },
+            new Patio { IdPatio = 17, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CONTAINER PARK", Estatus = 1 },
+            new Patio { IdPatio = 18, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CIMA", Estatus = 1 },
+            new Patio { IdPatio = 19, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CONTENEDORES DEL GOLFO", Estatus = 1 },
+            new Patio { IdPatio = 20, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "ICAVE SANTA FE", Estatus = 1 },
+            new Patio { IdPatio = 21, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CICE SAN JULIAN", Estatus = 1 },
+            new Patio { IdPatio = 22, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "SEABORD", Estatus = 1 },
+            new Patio { IdPatio = 23, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "TEAYL", Estatus = 1 },
+            new Patio { IdPatio = 24, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CONTAINER WASH", Estatus = 1 },
+            new Patio { IdPatio = 25, IdEstado = 28, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "GARCA", Estatus = 1 },
+
+            // VACIOS (IdTipoPatio = 21) - COLIMA (IdEstado = 7)
+            new Patio { IdPatio = 26, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "SSA PATIO EXTERNO 2", Estatus = 1 },
+
+            // SIN ESTADO NI TIPO
+            new Patio { IdPatio = 27, IdEstado = null, IdTipoOperacion = null, IdTipoPatio = null, Descripcion = "NO APLICA", Estatus = 1 },
+
+            new Patio { IdPatio = 28, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "SSA PATIO EXTERNO 1", Estatus = 1 },
+            new Patio { IdPatio = 29, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "IMPALA", Estatus = 1 },
+            new Patio { IdPatio = 30, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "HADRON", Estatus = 1 },
+            new Patio { IdPatio = 31, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "JACCER", Estatus = 1 },
+            new Patio { IdPatio = 32, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CIMA", Estatus = 1 },
+            new Patio { IdPatio = 33, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CIMA TEC 2 ASIPONA ISL", Estatus = 1 },
+            new Patio { IdPatio = 34, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "NALIGOVI", Estatus = 1 },
+            new Patio { IdPatio = 35, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "MCT", Estatus = 1 },
+            new Patio { IdPatio = 36, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "CASA", Estatus = 1 },
+            new Patio { IdPatio = 37, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "ACOMAN", Estatus = 1 },
+            new Patio { IdPatio = 38, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "SLTC", Estatus = 1 },
+            new Patio { IdPatio = 39, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "ALCAM PACIFICO", Estatus = 1 },
+            new Patio { IdPatio = 40, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "ALMAN", Estatus = 1 },
+            new Patio { IdPatio = 41, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "HAZESA", Estatus = 1 },
+            new Patio { IdPatio = 42, IdEstado = 7, IdTipoOperacion = null, IdTipoPatio = 21, Descripcion = "SICE GROUP", Estatus = 1 },
+
+            // RETIROS (IdTipoPatio = 19) - IMPORTACION (IdTipoOperacion = 1) - COLIMA
+            new Patio { IdPatio = 43, IdEstado = 7, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "OCUPA", Estatus = 1 },
+            new Patio { IdPatio = 44, IdEstado = 7, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "CONTECON", Estatus = 1 },
+            new Patio { IdPatio = 45, IdEstado = 7, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "TIMSA", Estatus = 1 },
+            new Patio { IdPatio = 46, IdEstado = 7, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "FRIMAN", Estatus = 1 },
+            new Patio { IdPatio = 47, IdEstado = 7, IdTipoOperacion = 1, IdTipoPatio = 19, Descripcion = "SSA", Estatus = 1 }
         );
 
         // 5. USUARIO - EMPRESA - ROL
@@ -419,7 +506,10 @@ public partial class SiilContext : DbContext
             new SisTipo { IdSisTipo = 3, Descripcion = "TRACTOCAMION", Estatus = 1 },
             new SisTipo { IdSisTipo = 4, Descripcion = "REMOLQUE", Estatus = 1 },
             new SisTipo { IdSisTipo = 5, Descripcion = "DOLLY", Estatus = 1 },
-            new SisTipo { IdSisTipo = 6, Descripcion = "GENERADOR", Estatus = 1 }
+            new SisTipo { IdSisTipo = 6, Descripcion = "GENERADOR", Estatus = 1 },
+
+            new SisTipo { IdSisTipo = 7, Descripcion = "RABON", Estatus = 1 }
+
         );
 
         modelBuilder.Entity<TipoMercancium>().HasData(
@@ -455,6 +545,7 @@ public partial class SiilContext : DbContext
             new TipoMercancium { IdTipoMercancia = 23, Descripcion = "IMO/GENERAL", IdEmpresa = 4 },
             new TipoMercancium { IdTipoMercancia = 24, Descripcion = "REFRIGERADA/GENERAL", IdEmpresa = 4 }
         );
+
 
         modelBuilder.Entity<Operacion>().HasData(
             new Operacion { IdOperacion = 1, TipoOperacion = "IMPORTACION" },

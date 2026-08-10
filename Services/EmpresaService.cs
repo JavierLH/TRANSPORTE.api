@@ -158,7 +158,10 @@ namespace API.Services
             var origenes = this._siilcontext.Origens.ToList();
             var destinoEstados = this._siilcontext.DestinoEstados.AsNoTracking().ToList();
             var destinoEstadoCiudades = this._siilcontext.DestinoEstadoCiudads.AsNoTracking().ToList();
-            
+
+            var patios = this._siilcontext.Patios.ToList();
+
+
             return new DatosViajeModal
             {
                 
@@ -171,7 +174,8 @@ namespace API.Services
 
                 Origenes = origenes,
                 DestinoEstados = destinoEstados,
-                DestinoEstadoCiudades = destinoEstadoCiudades
+                DestinoEstadoCiudades = destinoEstadoCiudades,
+                Patios = patios
 
             };
 

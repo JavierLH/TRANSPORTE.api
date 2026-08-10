@@ -6,20 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIV2.Models;
 
-[Keyless]
+[Table("Patio")]
 public partial class Patio
 {
-    public int? IdPatio { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public int IdPatio { get; set; }
 
     public int? IdEstado { get; set; }
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Operacion { get; set; }
+    public int? IdTipoOperacion { get; set; }
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Tipo { get; set; }
+    public int? IdTipoPatio { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]

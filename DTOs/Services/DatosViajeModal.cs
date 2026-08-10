@@ -22,5 +22,7 @@ namespace APIV2.DTOs.Services
 
         public List<DestinoEstadoCiudad> DestinoEstadoCiudades { get; set; }
 
+        public List<Patio> Patios { get; set; }
+
     }
 }

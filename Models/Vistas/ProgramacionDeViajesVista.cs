@@ -126,9 +126,9 @@ namespace APIV2.Models
 
         [Column("Entrega", TypeName = "datetime")]
         public DateTime? Entrega { get; set; }
-
-        [Column("HoraCita", TypeName = "datetime")]
-        public DateTime? HoraCita { get; set; }
+       
+        [Column(TypeName = "time")]
+        public TimeOnly? HoraCita { get; set; }
 
         [Column("envioPOD")]
         [StringLength(250)]

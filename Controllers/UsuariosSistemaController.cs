@@ -103,7 +103,6 @@ namespace API.Controllers
         }
 
        
-
         [HttpGet("admin/{id}")]
         //[AllowAnonymous]
         public async Task<ActionResult<UsuarioSistemaConRolesYPermisos>> GetUsuarioSistemaAdmin(int id)

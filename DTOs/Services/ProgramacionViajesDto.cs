@@ -41,7 +41,7 @@ namespace API.DTOs.Services
 
         public string? Asignacion { get; set; }
 
-        public string? IdPatio { get; set; }
+        public int? IdPatio { get; set; }
 
         public DateTime? Ingreso { get; set; }
 
@@ -127,7 +127,7 @@ namespace API.DTOs.Services
 
         public int? EstadiasClienteGeneradas { get; set; }
 
-        public DateTime? HoraCita { get; set; }
+        public TimeOnly? HoraCita { get; set; }
 
         public DateTime? RegistroCalt { get; set; }
 
