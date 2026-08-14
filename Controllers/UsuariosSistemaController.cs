@@ -144,6 +144,27 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetUsuarioSistema), new { id = usuario.IdUsuario }, usuario);
         }*/
 
+        [HttpGet("tiene-permiso")]
+        public async Task<ActionResult<TienePermisoDTO>> VerificarPermisoDeRuta([FromQuery] string ruta)
+        {
+            if (string.IsNullOrWhiteSpace(ruta))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "Se requiere el parámetro 'ruta'.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            bool tieneAcceso = await this._usuariosSistemaService.elUsuarioTienePermisoAlRecurso(ruta);
+
+            return Ok(new TienePermisoDTO
+            {
+                Ruta = ruta,
+                TieneAcceso = tieneAcceso
+            });
+        }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuarioSistema(int id, UsuariosSistema usuario)

@@ -260,9 +260,14 @@ namespace API.Services
 
             return raices;
         }
-        
+
         public async Task<bool> elUsuarioTienePermisoAlRecurso(string ruta_objetivo)
         {
+            if (string.IsNullOrWhiteSpace(ruta_objetivo))
+            {
+                return false;
+            }
+
             var idUsuarioClaim = _httpContextAccessor.HttpContext?.User.FindFirst("idUsuario")?.Value;
 
             if (!int.TryParse(idUsuarioClaim, out int usuarioId))
@@ -270,33 +275,27 @@ namespace API.Services
                 return false;
             }
 
-            var lista = await this._context.UsuariosSistemas
-                .Include(e => e.UsuarioEmpresaRols)
-                .ThenInclude(e => e.IdRolNavigation)
-                .ThenInclude(e => e.RolesPermisos)
-                .ThenInclude(e => e.IdPermisoNavigation)
-                .ToListAsync();
+            string ruta = ruta_objetivo.Trim();
 
-            var usuarioActual = lista.FirstOrDefault(e => e.IdUsuario == usuarioId);
+            bool? esAdministrador = await this._context.UsuariosSistemas
+                .Where(u => u.IdUsuario == usuarioId)
+                .Select(u => (bool?)u.Roladministrador)
+                .FirstOrDefaultAsync();
 
-            if (usuarioActual == null)
+            if (esAdministrador == null)
             {
                 return false;
             }
 
-            if (usuarioActual.Roladministrador)
+            if (esAdministrador == true)
             {
                 return true;
             }
 
-            var rutasPermitidas = usuarioActual.UsuarioEmpresaRols
+            return await this._context.UsuarioEmpresaRols
+                .Where(uer => uer.IdUsuario == usuarioId)
                 .SelectMany(uer => uer.IdRolNavigation.RolesPermisos)
-                .Select(rp => rp.IdPermisoNavigation.RutaModulo)
-                .Where(ruta => !string.IsNullOrEmpty(ruta))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            return rutasPermitidas.Contains(ruta_objetivo, StringComparer.OrdinalIgnoreCase);
+                .AnyAsync(rp => rp.IdPermisoNavigation.RutaModulo == ruta);
         }
 
         public async Task<List<UsuarioTablaDTO>> obtenerTodosLosUsuariosTablaAsync()
