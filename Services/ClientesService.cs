@@ -7,15 +7,25 @@ namespace APIV2.Services
     public class ClientesService
     {
         public SiilContext repositorio;
-        public ClientesService(SiilContext siilContext)
+        private readonly ILogger<ClientesService> _logger;
+
+        public ClientesService(SiilContext siilContext, ILogger<ClientesService> logger)
         {
             this.repositorio = siilContext;
+            _logger = logger;
+
         }
+
 
         public async Task<Cliente> crear(Cliente cliente)
         {
             // IdCliente es IDENTITY: SQL Server lo genera y EF lo devuelve
             // en el objeto después del SaveChanges.
+
+            Console.WriteLine("Ejecutando metodo");
+
+            _logger.LogInformation("EJECUTANDO METODO");
+            
             this.repositorio.Clientes.Add(cliente);
             await this.repositorio.SaveChangesAsync();
 

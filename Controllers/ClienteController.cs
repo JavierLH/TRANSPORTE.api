@@ -50,6 +50,9 @@ namespace APIV2.Controllers
         [HttpPost]
         public async Task<ActionResult<Cliente>> Crear([FromBody] Cliente cliente)
         {
+
+            
+
             if (string.IsNullOrWhiteSpace(cliente.NombreCliente))
             {
                 return StatusCode(422, new RespuestaError<string>
