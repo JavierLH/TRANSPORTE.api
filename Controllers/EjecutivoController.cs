@@ -27,6 +27,13 @@ namespace API.Controllers
             return this.siilContext.Ejecutivos.ToList();
         }
 
+
+        [HttpGet("{idEmpresa}/ejecutivos")]
+        public async Task<ActionResult<List<Ejecutivo>>> obtenerEjecutivosPorEmpresa (int idEmpresa)
+        {
+            return await this._ejecutivosService.obtenerEjecutivosPorEmpresa(idEmpresa);
+        }
+        
         [HttpGet("{idEjecutivo}")]
         public async Task<ActionResult<Ejecutivo>> ObtenerPorId(int idEjecutivo)
         {

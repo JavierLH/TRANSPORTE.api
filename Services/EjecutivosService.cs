@@ -1,6 +1,7 @@
 ﻿using APIV2.Models;
 using APIV2.Repositorio;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace APIV2.Services
 {
@@ -12,15 +13,26 @@ namespace APIV2.Services
             this.repositorio = siilContext;
         }
 
-        public async Task<Ejecutivo> crear(Ejecutivo ejecutivo)
-        {
-            this.repositorio.Ejecutivos.Add(ejecutivo);
-            await this.repositorio.SaveChangesAsync();
 
-            return ejecutivo;
-        }
+    public async Task<Ejecutivo> crear(Ejecutivo ejecutivo)
+    {
+        await using var transaccion = await this.repositorio.Database
+            .BeginTransactionAsync(IsolationLevel.Serializable);
 
-        public async Task eliminar(int idEjecutivo)
+        int ultimoId = (await this.repositorio.Ejecutivos
+            .MaxAsync(e => (int?)e.IdEjecutivo)) ?? 0;
+
+        ejecutivo.IdEjecutivo = ultimoId + 1;
+
+        this.repositorio.Ejecutivos.Add(ejecutivo);
+        await this.repositorio.SaveChangesAsync();
+
+        await transaccion.CommitAsync();
+
+        return ejecutivo;
+    }
+
+    public async Task eliminar(int idEjecutivo)
         {
             await this.repositorio.Ejecutivos
                 .Where(e => e.IdEjecutivo == idEjecutivo)
@@ -49,5 +61,13 @@ namespace APIV2.Services
             return await this.repositorio.Ejecutivos
                 .FirstOrDefaultAsync(e => e.IdEjecutivo == idEjecutivo);
         }
+
+        public async Task<List<Ejecutivo>> obtenerEjecutivosPorEmpresa(int idEmpresa)
+        {
+            return await this.repositorio.Ejecutivos
+                .Where(e => e.IdEmpresa == idEmpresa)
+                .ToListAsync();
+        }
+
     }
 }
