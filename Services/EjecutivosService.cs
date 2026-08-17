@@ -14,25 +14,25 @@ namespace APIV2.Services
         }
 
 
-    public async Task<Ejecutivo> crear(Ejecutivo ejecutivo)
-    {
-        await using var transaccion = await this.repositorio.Database
-            .BeginTransactionAsync(IsolationLevel.Serializable);
+        public async Task<Ejecutivo> crear(Ejecutivo ejecutivo)
+        {
+            await using var transaccion = await this.repositorio.Database
+                .BeginTransactionAsync(IsolationLevel.Serializable);
 
-        int ultimoId = (await this.repositorio.Ejecutivos
-            .MaxAsync(e => (int?)e.IdEjecutivo)) ?? 0;
+            int ultimoId = (await this.repositorio.Ejecutivos
+                .MaxAsync(e => (int?)e.IdEjecutivo)) ?? 0;
 
-        ejecutivo.IdEjecutivo = ultimoId + 1;
+            ejecutivo.IdEjecutivo = ultimoId + 1;
 
-        this.repositorio.Ejecutivos.Add(ejecutivo);
-        await this.repositorio.SaveChangesAsync();
+            this.repositorio.Ejecutivos.Add(ejecutivo);
+            await this.repositorio.SaveChangesAsync();
 
-        await transaccion.CommitAsync();
+            await transaccion.CommitAsync();
 
-        return ejecutivo;
-    }
+            return ejecutivo;
+        }
 
-    public async Task eliminar(int idEjecutivo)
+        public async Task eliminar(int idEjecutivo)
         {
             await this.repositorio.Ejecutivos
                 .Where(e => e.IdEjecutivo == idEjecutivo)

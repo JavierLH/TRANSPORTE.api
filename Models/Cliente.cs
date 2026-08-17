@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIV2.Models;
 
-[Keyless]
 public partial class Cliente
 {
-    public int? IdCliente { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int IdCliente { get; set; }
 
     public int? IdEmpresa { get; set; }
 

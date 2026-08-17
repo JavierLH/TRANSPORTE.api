@@ -131,8 +131,11 @@ namespace APIV2.Migrations
 
             modelBuilder.Entity("APIV2.Models.Cliente", b =>
                 {
-                    b.Property<int?>("IdCliente")
+                    b.Property<int>("IdCliente")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCliente"));
 
                     b.Property<int?>("IdEmpresa")
                         .HasColumnType("int");
@@ -141,6 +144,8 @@ namespace APIV2.Migrations
                         .HasMaxLength(100)
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)");
+
+                    b.HasKey("IdCliente");
 
                     b.HasIndex("IdEmpresa");
 

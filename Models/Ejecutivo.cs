@@ -11,7 +11,7 @@ public partial class Ejecutivo
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public int? IdEjecutivo { get; set; }
+    public int IdEjecutivo { get; set; }
 
     [StringLength(100)]
     [Unicode(false)]
