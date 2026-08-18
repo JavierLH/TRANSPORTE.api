@@ -174,5 +174,8 @@ namespace APIV2.Models
         [Column("comentarios")]
         public string? comentarios { get; set; }
 
+        [Column("turno")]
+        public string? turno { get; set; }
+
     }
 }
