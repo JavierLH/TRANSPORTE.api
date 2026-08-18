@@ -106,8 +106,23 @@ namespace APIV2.Models
         [Unicode(false)]
         public string? Temperatura { get; set; }
 
+        /// <summary>Se conserva el int: es con el que comparan los filtros.</summary>
         [Column("estatus")]
         public int? Estatus { get; set; }
+
+        /// <summary>
+        /// El estatus en texto. El int de arriba se conserva para los filtros;
+        /// este es el que se muestra en la tabla.
+        /// </summary>
+        [Column("estatusConDetalle")]
+        [Unicode(false)]
+        public string? EstatusConDetalle { get; set; }
+
+
+
+        [Column("turno")]
+        [Unicode(false)]
+        public string? Turno { get; set; }
 
         [Column("EcoIngresa")]
         [StringLength(50)]
@@ -173,9 +188,6 @@ namespace APIV2.Models
 
         [Column("comentarios")]
         public string? comentarios { get; set; }
-
-        [Column("turno")]
-        public string? turno { get; set; }
 
     }
 }
