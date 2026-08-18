@@ -1,4 +1,5 @@
-﻿using API.DTOs.Error;
+﻿using API.DTOs.Controllers.ProgramacionViajesController;
+using API.DTOs.Error;
 using API.DTOs.Services;
 using API.Services;
 using APIV2.DTOs.Services;
@@ -17,6 +18,13 @@ namespace API.Controllers
     public class ProgramacionViajesController : ControllerBase
     {
         private readonly ProgramacionViajesService _viajesService;
+
+        /// <summary>
+        /// Contraseña que autoriza el borrado de viajes.
+        /// TEMPORAL: está en código duro. Mover a appsettings.json o a la base
+        /// de datos antes de publicar; hoy queda visible en el repositorio.
+        /// </summary>
+        private const string ContrasenaEliminarViaje = "SIIL2026";
 
         public ProgramacionViajesController(ProgramacionViajesService viajesService)
         {
@@ -87,10 +95,30 @@ namespace API.Controllers
         }
 
         // DELETE: api/ProgramacionViajes/5
+        // La contraseña viaja en el cuerpo, nunca en la URL: los query strings
+        // quedan registrados en los logs del servidor.
         [HttpDelete("{id}")]
         //[AllowAnonymous]
-        public async Task<ActionResult<ProgramacionViaje>> EliminarViaje(int id)
+        public async Task<ActionResult<ProgramacionViaje>> EliminarViaje(int id, [FromBody] EliminarViajeDTO datos)
         {
+            if (datos == null || string.IsNullOrWhiteSpace(datos.Contrasena))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "Se requiere la contraseña para eliminar el viaje.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            if (datos.Contrasena != ContrasenaEliminarViaje)
+            {
+                return StatusCode(403, new RespuestaError<string>
+                {
+                    Mensaje = "La contraseña es incorrecta. No se eliminó el viaje.",
+                    ClaseConError = "Autorización de borrado rechazada"
+                });
+            }
+
             var viajeEliminado = await _viajesService.EliminarViaje(id);
 
             if (viajeEliminado == null)
