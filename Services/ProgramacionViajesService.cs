@@ -13,10 +13,146 @@ namespace API.Services
     public class ProgramacionViajesService
     {
         private readonly SiilContext _siilcontext;
+        private readonly IWebHostEnvironment _entorno;
 
-        public ProgramacionViajesService(SiilContext siilContext)
+        /// <summary>Solo documentos: nada de imágenes ni videos.</summary>
+        private static readonly string[] ExtensionesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
+
+        private const long TamanoMaximoBytes = 10 * 1024 * 1024; // 10 MB
+
+        public ProgramacionViajesService(SiilContext siilContext, IWebHostEnvironment entorno)
         {
             this._siilcontext = siilContext;
+            this._entorno = entorno;
+        }
+
+        /// <summary>
+        /// Guarda el documento en Documentos/EMPRESA/CLIENTE/AÑO/FOLIO_AÑO/archivo.ext
+        /// y persiste el nombre y la ruta relativa en el viaje.
+        /// </summary>
+        public async Task<ProgramacionViaje> GuardarDocumentoDelViaje(int idProgramacion, IFormFile archivo)
+        {
+            if (archivo == null || archivo.Length == 0)
+            {
+                throw new ArgumentException("No se recibió ningún archivo.");
+            }
+
+            var extension = Path.GetExtension(archivo.FileName).ToLowerInvariant();
+
+            if (!ExtensionesPermitidas.Contains(extension))
+            {
+                throw new ArgumentException($"Formato no permitido. Solo se aceptan: {string.Join(", ", ExtensionesPermitidas)}.");
+            }
+
+            if (archivo.Length > TamanoMaximoBytes)
+            {
+                throw new ArgumentException($"El documento supera el máximo de {TamanoMaximoBytes / 1024 / 1024} MB.");
+            }
+
+            var viaje = await _siilcontext.ProgramacionViajes.FindAsync(idProgramacion);
+
+            if (viaje == null)
+            {
+                return null;
+            }
+
+            var empresa = await _siilcontext.Empresas
+                .FirstOrDefaultAsync(e => e.IdEmpresa == viaje.IdEmpresa);
+
+            var cliente = await _siilcontext.Clientes
+                .FirstOrDefaultAsync(c => c.IdCliente == viaje.IdCliente);
+
+            var anio = viaje.Fecha?.Year ?? DateTime.Now.Year;
+
+            var carpetaRelativa = Path.Combine(
+                "Documentos",
+                SanearNombre(empresa?.NombreEmpresa ?? "SIN_EMPRESA"),
+                SanearNombre(cliente?.NombreCliente ?? "SIN_CLIENTE"),
+                anio.ToString(),
+                $"{viaje.IdProgramacion}_{anio}"
+            );
+
+            var carpetaAbsoluta = Path.Combine(_entorno.ContentRootPath, carpetaRelativa);
+            Directory.CreateDirectory(carpetaAbsoluta);
+
+            // Se usa solo el nombre del archivo (sin ruta) para evitar path traversal
+            var nombreArchivo = SanearNombre(Path.GetFileNameWithoutExtension(archivo.FileName)) + extension;
+            var rutaAbsoluta = Path.Combine(carpetaAbsoluta, nombreArchivo);
+
+            using (var stream = new FileStream(rutaAbsoluta, FileMode.Create))
+            {
+                await archivo.CopyToAsync(stream);
+            }
+
+            viaje.NombreArchivo = nombreArchivo;
+            viaje.RutaArchivo = Path.Combine(carpetaRelativa, nombreArchivo).Replace("\\", "/");
+
+            await _siilcontext.SaveChangesAsync();
+
+            return viaje;
+        }
+
+        /// <summary>
+        /// Devuelve el documento del viaje listo para enviarse al cliente.
+        /// Regresa null si el viaje no existe, no tiene documento o el archivo ya no está en disco.
+        /// </summary>
+        public async Task<(byte[] Contenido, string Nombre, string TipoMime)?> ObtenerDocumentoDelViaje(int idProgramacion)
+        {
+            var viaje = await _siilcontext.ProgramacionViajes.FindAsync(idProgramacion);
+
+            if (viaje == null || string.IsNullOrWhiteSpace(viaje.RutaArchivo))
+            {
+                return null;
+            }
+
+            var rutaAbsoluta = Path.Combine(_entorno.ContentRootPath, viaje.RutaArchivo.Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+            if (!File.Exists(rutaAbsoluta))
+            {
+                return null;
+            }
+
+            var contenido = await File.ReadAllBytesAsync(rutaAbsoluta);
+            var nombre = viaje.NombreArchivo ?? Path.GetFileName(rutaAbsoluta);
+
+            return (contenido, nombre, ObtenerTipoMime(Path.GetExtension(rutaAbsoluta)));
+        }
+
+        private static string ObtenerTipoMime(string extension) => extension.ToLowerInvariant() switch
+        {
+            ".pdf" => "application/pdf",
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            _ => "application/octet-stream"
+        };
+
+        /// <summary>
+        /// Quita caracteres inválidos para rutas y normaliza a MAYUSCULAS_CON_GUION_BAJO.
+        /// </summary>
+        private static string SanearNombre(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return "SIN_NOMBRE";
+            }
+
+            var invalidos = Path.GetInvalidFileNameChars().Concat(new[] { ' ', ',', '.', ';', ':' }).ToArray();
+
+            var limpio = new string(valor
+                .Select(c => invalidos.Contains(c) ? '_' : c)
+                .ToArray());
+
+            // Colapsa guiones bajos repetidos y recorta los de las orillas
+            while (limpio.Contains("__"))
+            {
+                limpio = limpio.Replace("__", "_");
+            }
+
+            limpio = limpio.Trim('_').ToUpperInvariant();
+
+            return string.IsNullOrEmpty(limpio) ? "SIN_NOMBRE" : limpio;
         }
 
         public async Task<ProgramacionViaje> ObtenerViajePorId(int idProgramacion)

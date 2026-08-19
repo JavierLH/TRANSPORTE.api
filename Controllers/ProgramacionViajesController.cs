@@ -134,6 +134,53 @@ namespace API.Controllers
             return viajeEliminado;
         }
 
+        // POST: api/ProgramacionViajes/5/documento
+        [HttpPost("{idProgramacion}/documento")]
+        public async Task<ActionResult<ProgramacionViaje>> SubirDocumento(int idProgramacion, IFormFile archivo)
+        {
+            try
+            {
+                var viaje = await _viajesService.GuardarDocumentoDelViaje(idProgramacion, archivo);
+
+                if (viaje == null)
+                {
+                    return StatusCode(404, new RespuestaError<string>
+                    {
+                        Mensaje = $"No existe el viaje con folio {idProgramacion}.",
+                        ClaseConError = "Viaje no encontrado"
+                    });
+                }
+
+                return viaje;
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = ex.Message,
+                    ClaseConError = "Archivo inválido"
+                });
+            }
+        }
+
+        // GET: api/ProgramacionViajes/5/documento
+        [HttpGet("{idProgramacion}/documento")]
+        public async Task<IActionResult> DescargarDocumento(int idProgramacion)
+        {
+            var documento = await _viajesService.ObtenerDocumentoDelViaje(idProgramacion);
+
+            if (documento == null)
+            {
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = $"El viaje {idProgramacion} no tiene un documento disponible.",
+                    ClaseConError = "Documento no encontrado"
+                });
+            }
+
+            return File(documento.Value.Contenido, documento.Value.TipoMime, documento.Value.Nombre);
+        }
+
         // GET: api/ProgramacionViajes/filtrar
         [HttpGet("filtrar")]
         public async Task<ActionResult<IEnumerable<ProgramacionViaje>>> ObtenerPorFechaYEmpresa(
