@@ -2342,6 +2342,11 @@ namespace APIV2.Migrations
                         .HasColumnType("int")
                         .HasColumnName("estatus");
 
+                    b.Property<string>("EstatusConDetalle")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("estatusConDetalle");
+
                     b.Property<DateTime?>("Fecha")
                         .HasColumnType("datetime")
                         .HasColumnName("fecha");
@@ -2433,10 +2438,8 @@ namespace APIV2.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("operadorIngresa");
 
-                    b.Property<string>("SIngreso")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
+                    b.Property<DateTime?>("SIngreso")
+                        .HasColumnType("datetime")
                         .HasColumnName("sIngreso");
 
                     b.Property<DateTime?>("SalidaPatio")
@@ -2447,6 +2450,11 @@ namespace APIV2.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)")
                         .HasColumnName("temperatura");
+
+                    b.Property<string>("Turno")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("turno");
 
                     b.Property<string>("citaTerminal")
                         .HasColumnType("nvarchar(max)")
@@ -2715,10 +2723,8 @@ namespace APIV2.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
-                    b.Property<string>("SIngreso")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
+                    b.Property<DateTime?>("SIngreso")
+                        .HasColumnType("datetime")
                         .HasColumnName("sIngreso");
 
                     b.Property<DateTime?>("SalidaPatio")

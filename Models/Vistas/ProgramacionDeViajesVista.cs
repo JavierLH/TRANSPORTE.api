@@ -134,10 +134,8 @@ namespace APIV2.Models
         [Unicode(false)]
         public string? OperadorIngresa { get; set; }
 
-        [Column("sIngreso")]
-        [StringLength(100)]
-        [Unicode(false)]
-        public string? SIngreso { get; set; }
+        [Column("sIngreso", TypeName = "datetime")]
+        public DateTime? SIngreso { get; set; }
 
         [Column("Entrega", TypeName = "datetime")]
         public DateTime? Entrega { get; set; }

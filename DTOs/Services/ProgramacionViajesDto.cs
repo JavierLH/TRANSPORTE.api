@@ -114,8 +114,7 @@ namespace API.DTOs.Services
 
         public int? IdConvenio { get; set; }
 
-        [StringLength(100)]
-        public string? sIngreso { get; set; }
+        public DateTime? sIngreso { get; set; }
 
         public int? IdPatio2 { get; set; }
 

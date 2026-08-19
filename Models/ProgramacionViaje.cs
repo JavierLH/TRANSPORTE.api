@@ -140,10 +140,8 @@ public partial class ProgramacionViaje
 
     public int? IdConvenio { get; set; }
 
-    [Column("sIngreso")]
-    [StringLength(100)]
-    [Unicode(false)]
-    public string? SIngreso { get; set; }
+    [Column("sIngreso", TypeName = "datetime")]
+    public DateTime? SIngreso { get; set; }
 
     public int? IdPatio2 { get; set; }
 
