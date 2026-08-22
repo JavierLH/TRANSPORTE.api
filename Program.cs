@@ -23,6 +23,7 @@ builder.Services.AddScoped<EjecutivosService>();
 builder.Services.AddScoped<ConvenioService>();
 builder.Services.AddScoped<PizarraService>();
 builder.Services.AddScoped<ClientesService>();
+builder.Services.AddScoped<OperadoresService>();
 
 builder.Services.AddControllers();
 

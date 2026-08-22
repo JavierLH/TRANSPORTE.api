@@ -860,19 +860,21 @@ namespace APIV2.Migrations
 
             modelBuilder.Entity("APIV2.Models.Operadore", b =>
                 {
+                    b.Property<int>("IdOperador")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Estatus")
                         .HasColumnType("int");
 
                     b.Property<int?>("IdEmpresa")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdOperador")
-                        .HasColumnType("int");
-
                     b.Property<string>("NombreOperador")
                         .HasMaxLength(100)
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)");
+
+                    b.HasKey("IdOperador");
 
                     b.HasIndex("IdEmpresa");
 

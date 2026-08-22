@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APIV2.Models;
 
-[Keyless]
 public partial class Operadore
 {
-    public int? IdOperador { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public int IdOperador { get; set; }
 
     [StringLength(100)]
     [Unicode(false)]
