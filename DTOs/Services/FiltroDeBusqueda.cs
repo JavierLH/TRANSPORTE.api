@@ -8,5 +8,8 @@ namespace APIV2.DTOs.Services
         public List<EstatusViaje> estatusViajes { get; set; }
         public List<Cliente> cliente {  get; set; }
         public List<Ejecutivo> ejecutivos { get; set; }
+
+        public List<Convenio> convenios { get; set; }
+
     }
 }

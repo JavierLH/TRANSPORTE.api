@@ -411,7 +411,9 @@ namespace API.Services
            int? idOrigen,
            int? idEstatus,
            int? idCliente,
-           int? idEjecutivo)
+           int? idEjecutivo,
+           int? idConvenio
+            )
         {
             var query = _siilcontext.programacionDeViajesVista
                 .Where(v => v.idEmpresa == idEmpresa);
@@ -439,6 +441,9 @@ namespace API.Services
 
             if (idEjecutivo.HasValue)
                 query = query.Where(v => v.IdEjecutivo == idEjecutivo.Value);
+
+            if (idConvenio.HasValue)
+                query = query.Where(v => v.idConvenio == idConvenio.Value);
 
             return await query.ToListAsync();
         }

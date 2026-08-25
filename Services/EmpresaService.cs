@@ -188,6 +188,8 @@ namespace API.Services
             var cliente = this._siilcontext.Clientes.Where(e => e.IdEmpresa == idEmpresa).ToList();
             var ejecutivos = this._siilcontext.Ejecutivos.Where(e => e.IdEmpresa == idEmpresa).ToList();
 
+            var convenios = this._siilcontext.Convenios.Where(e => e.IdEmpresa == idEmpresa).ToList();
+
             /*Console.WriteLine(origenesDestinos);
             Console.WriteLine(estatusViaje);
             Console.WriteLine(cliente);
@@ -198,7 +200,8 @@ namespace API.Services
                 origenesDestinos = origenesDestinos,
                 estatusViajes = estatusViaje,
                 cliente = cliente,
-                ejecutivos = ejecutivos
+                ejecutivos = ejecutivos,
+                convenios = convenios
             };
         }
 

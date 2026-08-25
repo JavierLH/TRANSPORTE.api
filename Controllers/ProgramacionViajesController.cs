@@ -213,10 +213,12 @@ namespace API.Controllers
             [FromQuery] int? idOrigen,
             [FromQuery] int? idEstatus,
             [FromQuery] int? idCliente,
-            [FromQuery] int? idEjecutivo)
+            [FromQuery] int? idEjecutivo,
+            [FromQuery] int? idConvenio
+            )
         {
             var resultados = await _viajesService.obtenerViajesPorFiltrosDeLaVistaOrigenEstatusViajeClienteEjecutivo(
-                idEmpresa, fechaInicio, fechaFin, idOrigen, idEstatus, idCliente, idEjecutivo);
+                idEmpresa, fechaInicio, fechaFin, idOrigen, idEstatus, idCliente, idEjecutivo, idConvenio);
 
             return Ok(resultados);
         }
