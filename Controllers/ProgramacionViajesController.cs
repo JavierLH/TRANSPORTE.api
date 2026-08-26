@@ -34,7 +34,27 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ProgramacionViaje> ObtenerViajePorId(int id)
         {
-            return await _viajesService.ObtenerViajePorId(id); 
+            return await _viajesService.ObtenerViajePorId(id);
+        }
+
+        // GET: api/ProgramacionViajes/5/bitacora
+        [HttpGet("{id}/bitacora")]
+        public async Task<ActionResult<List<EdicionBitacoraDTO>>> ObtenerBitacoraDelViaje(int id)
+        {
+            var viaje = await _viajesService.ObtenerViajePorId(id);
+
+            if (viaje == null)
+            {
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = "No se encontró el viaje con el ID proporcionado.",
+                    ClaseConError = $"Viaje con ID {id} no encontrado."
+                });
+            }
+
+            // Una lista vacía es una respuesta válida: significa que el viaje
+            // existe pero nunca se ha editado. No es un 404.
+            return await _viajesService.obtenerBitacoraDelViaje(id);
         }
 
         // POST: api/ProgramacionViajes

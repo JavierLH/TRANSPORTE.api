@@ -160,6 +160,59 @@ namespace API.Services
             return await _siilcontext.ProgramacionViajes.FindAsync(idProgramacion);
         }
 
+        /// <summary>
+        /// Historial de cambios de un viaje, de la edición más reciente a la más
+        /// antigua. La bitácora guarda una fila por campo modificado, así que se
+        /// agrupan las que comparten fecha y usuario: cada grupo es un guardado.
+        /// </summary>
+        public async Task<List<EdicionBitacoraDTO>> obtenerBitacoraDelViaje(int idProgramacion)
+        {
+            var filas = await _siilcontext.BitacoraCambios
+                .Where(b => b.Tabla == "ProgramacionViajes" && b.IdRegistro == idProgramacion)
+                .ToListAsync();
+
+            if (filas.Count == 0)
+            {
+                return new List<EdicionBitacoraDTO>();
+            }
+
+            // Los nombres se resuelven en una sola consulta y no uno por uno
+            // dentro del recorrido, para no disparar una consulta por edición.
+            var idsUsuarios = filas
+                .Where(b => b.IdUsuario != null)
+                .Select(b => b.IdUsuario!.Value)
+                .Distinct()
+                .ToList();
+
+            var nombresPorId = await _siilcontext.UsuariosSistemas
+                .Where(u => idsUsuarios.Contains(u.IdUsuario))
+                .ToDictionaryAsync(
+                    u => u.IdUsuario,
+                    u => (u.Nombre + " " + u.ApPaterno + " " + u.ApMaterno).Trim());
+
+            return filas
+                .GroupBy(b => new { b.FechaCambio, b.IdUsuario })
+                .OrderByDescending(grupo => grupo.Key.FechaCambio)
+                .Select(grupo => new EdicionBitacoraDTO
+                {
+                    FechaCambio = grupo.Key.FechaCambio,
+                    IdUsuario = grupo.Key.IdUsuario,
+                    Usuario = grupo.Key.IdUsuario != null && nombresPorId.ContainsKey(grupo.Key.IdUsuario.Value)
+                        ? nombresPorId[grupo.Key.IdUsuario.Value]
+                        : null,
+                    Cambios = grupo
+                        .OrderBy(b => b.Campo)
+                        .Select(b => new CampoModificadoDTO
+                        {
+                            Campo = b.Campo,
+                            ValorAnterior = b.ValorAnterior,
+                            ValorNuevo = b.ValorNuevo
+                        })
+                        .ToList()
+                })
+                .ToList();
+        }
+
         public async Task<ProgramacionViaje> InsertarNuevoViaje(ProgramacionViajesDto dto)
         {
             if (dto == null) return null;
@@ -335,6 +388,12 @@ namespace API.Services
             
             var entrada = _siilcontext.Entry(viajeExistente);
 
+            // Una sola marca de tiempo para todas las filas de esta edición.
+            // Si se pusiera DateTime.Now dentro del Select, cada campo tendría
+            // su propio instante (difieren en microsegundos) y después sería
+            // imposible agrupar los cambios que se hicieron juntos.
+            var momentoDelCambio = DateTime.Now;
+
             var cambios = entrada.Properties
                 .Where(propiedad => propiedad.IsModified)
                 .Select(propiedad => new BitacoraCambio
@@ -345,7 +404,7 @@ namespace API.Services
                     ValorAnterior = propiedad.OriginalValue?.ToString(),
                     ValorNuevo = propiedad.CurrentValue?.ToString(),
                     IdUsuario = dto.IdUsuarioUltimaModificacion,
-                    FechaCambio = DateTime.Now
+                    FechaCambio = momentoDelCambio
                 })
                 .ToList();
 
