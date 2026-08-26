@@ -70,6 +70,9 @@ namespace API.Controllers
         //[AllowAnonymous]
         public async Task<ActionResult<ProgramacionViaje>> ActualizarViaje(int id, [FromBody] ProgramacionViajesDto dto)
         {
+
+           
+
             if (dto == null)
             {
                 return StatusCode(422, new RespuestaError<string>

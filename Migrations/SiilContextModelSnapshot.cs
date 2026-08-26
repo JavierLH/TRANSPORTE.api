@@ -24,16 +24,19 @@ namespace APIV2.Migrations
 
             modelBuilder.Entity("APIV2.Models.BitacoraCambio", b =>
                 {
+                    b.Property<int>("IdBitacora")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBitacora"));
+
                     b.Property<string>("Campo")
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<DateOnly?>("FechaCambio")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("IdBitacora")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("FechaCambio")
+                        .HasColumnType("datetime");
 
                     b.Property<int?>("IdRegistro")
                         .HasColumnType("int");
@@ -53,6 +56,10 @@ namespace APIV2.Migrations
                     b.Property<string>("ValorNuevo")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
+
+                    b.HasKey("IdBitacora");
+
+                    b.HasIndex("Tabla", "IdRegistro");
 
                     b.ToTable("BitacoraCambios");
                 });
@@ -2465,6 +2472,10 @@ namespace APIV2.Migrations
                     b.Property<string>("comentarios")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("comentarios");
+
+                    b.Property<int?>("idConvenio")
+                        .HasColumnType("int")
+                        .HasColumnName("idConvenio");
 
                     b.Property<int?>("idEmpresa")
                         .HasColumnType("int")

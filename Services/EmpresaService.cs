@@ -186,7 +186,11 @@ namespace API.Services
             var origenesDestinos = this._siilcontext.Origens.ToList();
             var estatusViaje = this._siilcontext.EstatusViajes.ToList();
             var cliente = this._siilcontext.Clientes.Where(e => e.IdEmpresa == idEmpresa).ToList();
-            var ejecutivos = this._siilcontext.Ejecutivos.Where(e => e.IdEmpresa == idEmpresa).ToList();
+            // Solo los activos: un ejecutivo dado de baja no debe seguir
+            // apareciendo como opción en el filtro.
+            var ejecutivos = this._siilcontext.Ejecutivos
+                .Where(e => e.IdEmpresa == idEmpresa && e.activo == true)
+                .ToList();
 
             var convenios = this._siilcontext.Convenios.Where(e => e.IdEmpresa == idEmpresa).ToList();
 

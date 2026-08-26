@@ -251,6 +251,7 @@ namespace API.Services
         // 2. MODIFICADO: Retorna el objeto actualizado
         public async Task<ProgramacionViaje> ActualizarViaje(int idProgramacion, ProgramacionViajesDto dto)
         {
+
             if (dto == null) return null;
 
             var viajeExistente = await _siilcontext.ProgramacionViajes.FindAsync(idProgramacion);
@@ -331,8 +332,36 @@ namespace API.Services
             viajeExistente.EnvioCita = dto.EnvioCita;
             viajeExistente.EnvioSeguimiento = dto.EnvioSeguimiento;
             viajeExistente.EnvioCcp = dto.EnvioCCP;
+            
+            var entrada = _siilcontext.Entry(viajeExistente);
 
-            _siilcontext.Entry(viajeExistente).State = EntityState.Modified;
+            var cambios = entrada.Properties
+                .Where(propiedad => propiedad.IsModified)
+                .Select(propiedad => new BitacoraCambio
+                {
+                    Tabla = "ProgramacionViajes",
+                    IdRegistro = idProgramacion,
+                    Campo = propiedad.Metadata.Name,
+                    ValorAnterior = propiedad.OriginalValue?.ToString(),
+                    ValorNuevo = propiedad.CurrentValue?.ToString(),
+                    IdUsuario = dto.IdUsuarioUltimaModificacion,
+                    FechaCambio = DateTime.Now
+                })
+                .ToList();
+
+            Console.WriteLine("Cambios detectados: **************************************************");
+            Console.WriteLine(cambios);
+
+            foreach(var cambio in cambios)
+            {
+                Console.WriteLine($"Campo: {cambio.Campo}, ValorAnterior: {cambio.ValorAnterior}, ValorNuevo: {cambio.ValorNuevo}");
+            }
+
+            if (cambios.Count > 0)
+            {
+                _siilcontext.BitacoraCambios.AddRange(cambios);
+            }
+
             var actualizado = await _siilcontext.SaveChangesAsync() > 0;
             return actualizado ? viajeExistente : null;
         }
