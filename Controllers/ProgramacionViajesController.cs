@@ -108,7 +108,7 @@ namespace API.Controllers
             {
                 return StatusCode(404, new RespuestaError<string>
                 {
-                    Mensaje = $"No fue posible actualizar. No existe una programación con el ID {id} o no hubo cambios.",
+                    Mensaje = $"No fue posible actualizar. No existe una programación con el ID {id}.",
                     ClaseConError = "Registro a modificar no encontrado o error en base de datos"
                 });
             }

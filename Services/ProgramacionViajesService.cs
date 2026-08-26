@@ -421,8 +421,12 @@ namespace API.Services
                 _siilcontext.BitacoraCambios.AddRange(cambios);
             }
 
-            var actualizado = await _siilcontext.SaveChangesAsync() > 0;
-            return actualizado ? viajeExistente : null;
+            // No se condiciona el resultado a SaveChangesAsync() > 0: guardar sin
+            // haber cambiado nada afecta 0 filas, y eso NO es un fallo. El único
+            // caso de error real es que el viaje no exista, y ese ya se atendió
+            // arriba devolviendo null.
+            await _siilcontext.SaveChangesAsync();
+            return viajeExistente;
         }
 
         // 3. MODIFICADO: Retorna el objeto eliminado
