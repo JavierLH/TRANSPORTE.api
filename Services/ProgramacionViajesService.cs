@@ -348,9 +348,13 @@ namespace API.Services
             viajeExistente.ComentariosConvenio = dto.ComentariosConvenio;
             viajeExistente.EstatusConvenio = dto.EstatusConvenio;
             viajeExistente.IdOperadorRetira = dto.IdOperadorRetira;
-            viajeExistente.NombreArchivo = dto.NombreArchivo;
             viajeExistente.IdOrigen = dto.IdOrigen;
-            viajeExistente.RutaArchivo = dto.RutaArchivo;
+
+            // NombreArchivo y RutaArchivo NO se tocan aquí a propósito: son
+            // propiedad de GuardarDocumentoDelViaje, que es quien sube el archivo
+            // y escribe la referencia. El formulario del viaje no los captura, así
+            // que llegan nulos en el DTO y asignarlos borraba el documento ya
+            // cargado: el archivo seguía en disco pero la base perdía la ruta.
             viajeExistente.IdClienteFactura = dto.IdClienteFactura;
             viajeExistente.Conexiones = dto.Conexiones;
             viajeExistente.InsumosAdicionales = dto.InsumosAdicionales;
