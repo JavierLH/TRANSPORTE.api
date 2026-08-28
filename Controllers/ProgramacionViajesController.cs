@@ -4,11 +4,13 @@ using API.DTOs.Services;
 using API.Services;
 using APIV2.DTOs.Services;
 using APIV2.Models;
+using APIV2.Utilerias;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -71,6 +73,9 @@ namespace API.Controllers
                 });
             }
 
+            string idUsuario = User.FindFirst("idUsuario")?.Value;
+            dto.IdUsuario = int.Parse(idUsuario);
+
             var viajeCreado = await _viajesService.InsertarNuevoViaje(dto);
 
             if (viajeCreado == null)
@@ -90,9 +95,6 @@ namespace API.Controllers
         //[AllowAnonymous]
         public async Task<ActionResult<ProgramacionViaje>> ActualizarViaje(int id, [FromBody] ProgramacionViajesDto dto)
         {
-
-           
-
             if (dto == null)
             {
                 return StatusCode(422, new RespuestaError<string>
@@ -101,6 +103,9 @@ namespace API.Controllers
                     ClaseConError = "Petición de Modificación Vacía"
                 });
             }
+
+            string idUsuario = User.FindFirst("idUsuario")?.Value;
+            dto.IdUsuarioUltimaModificacion = int.Parse(idUsuario);
 
             var viajeActualizado = await _viajesService.ActualizarViaje(id, dto);
 
