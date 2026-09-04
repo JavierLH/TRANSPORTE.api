@@ -1,4 +1,5 @@
-﻿using APIV2.Repositorio;
+﻿using APIV2.Models;
+using APIV2.Repositorio;
 
 namespace APIV2.Services
 {
@@ -130,6 +131,34 @@ namespace APIV2.Services
 
             return resultado;
         }
+
+        public List<VikViaje> ContenedoresSencillo(int añoInicial, int añoFinal)
+        {
+            var desde = new DateOnly(añoInicial, 1, 1);
+            var hasta = new DateOnly(añoFinal + 1, 1, 1);   
+
+            return this.SiilContext.pizarraDeViajes
+                .Where(e => e.Config == "SENCILLO"
+                         && e.FechaIda >= desde
+                         && e.FechaIda < hasta)
+                .ToList();
+        }
+
+        public List<VikViaje> ContenedoresFull(int añoInicial, int añoFinal)
+        {
+            var desde = new DateOnly(añoInicial, 1, 1);
+            var hasta = new DateOnly(añoFinal + 1, 1, 1);
+
+            return this.SiilContext.pizarraDeViajes
+                .Where(e => e.Config == "FULL"
+                         && e.FechaIda >= desde
+                         && e.FechaIda < hasta)
+                .GroupBy(e => e.Viaje)
+                .Select(g => g.OrderBy(x => x.IdGuia).First())
+                .ToList();
+        }
+
+
 
     }
 }
