@@ -1,5 +1,6 @@
 ﻿using APIV2.Models;
 using APIV2.Repositorio;
+using System.Linq;
 
 namespace APIV2.Services
 {
@@ -158,7 +159,108 @@ namespace APIV2.Services
                 .ToList();
         }
 
+        /// <summary>
+        /// Contenedores SENCILLO del año, contados por mes.
+        /// Devuelve la misma forma que obtenerAcumuladoPorRangoDeAniosVikingo
+        /// (año → 12 valores) para que la gráfica lo consuma sin adaptarlo.
+        /// </summary>
+        public Dictionary<int, List<int>> obtenerContenedoresSencilloPorAnio(int anio, string[] prefijos)
+        {
+            var desde = new DateOnly(anio, 1, 1);
+            var hasta = new DateOnly(anio + 1, 1, 1);
 
+            var consulta = this.SiilContext.pizarraDeViajes
+                .Where(e => e.Config == "SENCILLO"
+                         && e.FechaIda >= desde
+                         && e.FechaIda < hasta);
+
+            consulta = FiltrarPorPrefijos(consulta, prefijos);
+
+            // La tabla trae renglones repetidos: el mismo viaje puede aparecer
+            // más de una vez con idéntico estado, liquidación y tractor. Se
+            // descartan con Distinct sobre esas cuatro columnas, igual que la
+            // consulta de referencia en SSMS; contar renglones crudos inflaba
+            // el total (193 contra 191 en enero de 2026).
+            var renglones = consulta
+                .Select(e => new
+                {
+                    e.Viaje,
+                    e.Estado,
+                    e.Liquidacion,
+                    e.Tractor,
+                    e.FechaIda
+                })
+                .Distinct()
+                .ToList();
+
+            var fechas = renglones
+                .Select(e => e.FechaIda)
+                .ToList();
+
+            return AgruparPorMes(anio, fechas);
+        }
+
+        /// <summary>
+        /// Contenedores FULL del año, contados por mes.
+        /// </summary>
+        public Dictionary<int, List<int>> obtenerContenedoresFullPorAnio(int anio, string[] prefijos)
+        {
+            var desde = new DateOnly(anio, 1, 1);
+            var hasta = new DateOnly(anio + 1, 1, 1);
+
+            var consulta = this.SiilContext.pizarraDeViajes
+                .Where(e => e.Config == "FULL"
+                         && e.FechaIda >= desde
+                         && e.FechaIda < hasta);
+
+            consulta = FiltrarPorPrefijos(consulta, prefijos);
+
+            // Un viaje FULL aparece en varios renglones, así que se agrupa por
+            // Viaje y se conserva el de menor IdGuia para contarlo una sola vez.
+            // El ToList() va antes del GroupBy a propósito: EF no traduce a SQL
+            // el patrón GroupBy + OrderBy + First.
+            var fechas = consulta
+                .ToList()
+                .GroupBy(e => e.Viaje)
+                .Select(g => g.OrderBy(x => x.IdGuia).First().FechaIda)
+                .ToList();
+
+            return AgruparPorMes(anio, fechas);
+        }
+
+        /// <summary>
+        /// Limita la consulta a los viajes cuyo número empieza con alguno de los
+        /// prefijos (Vikingo son 31-34). Sin prefijos no filtra nada, para no
+        /// devolver una gráfica vacía cuando el frontend no los manda.
+        /// </summary>
+        private static IQueryable<VikViaje> FiltrarPorPrefijos(IQueryable<VikViaje> consulta, string[] prefijos)
+        {
+            if (prefijos == null || prefijos.Length == 0)
+            {
+                return consulta;
+            }
+
+            return consulta.Where(e => prefijos.Contains(e.Viaje.ToString().Substring(0, 2)));
+        }
+
+        /// <summary>
+        /// Reparte las fechas en los 12 meses del año y las devuelve indexadas
+        /// por año, que es el formato que espera el componente de la gráfica.
+        /// </summary>
+        private static Dictionary<int, List<int>> AgruparPorMes(int anio, List<DateOnly?> fechas)
+        {
+            var valoresPorMes = new List<int>();
+
+            for (int mes = 1; mes <= 12; mes++)
+            {
+                var cantidad = fechas.Count(fecha =>
+                    fecha.HasValue && fecha.Value.Year == anio && fecha.Value.Month == mes);
+
+                valoresPorMes.Add(cantidad);
+            }
+
+            return new Dictionary<int, List<int>> { [anio] = valoresPorMes };
+        }
 
     }
 }

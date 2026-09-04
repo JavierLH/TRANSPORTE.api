@@ -49,5 +49,23 @@ namespace APIV2.Controllers
             return _pizarraService.obtenerAcumuladosPorRangoDeAniosPorClave(anioInicial, anioFinal, codigos);
         }
 
+        // El año es opcional: sin él se toma el actual, que es el caso de uso.
+        // Los prefijos acotan la empresa (Vikingo son 31-34).
+        [HttpGet("contenedores-sencillo")]
+        public ActionResult<Dictionary<int, List<int>>> GetContenedoresSencillo(
+            [FromQuery] int? anio,
+            [FromQuery] string[] prefijos)
+        {
+            return _pizarraService.obtenerContenedoresSencilloPorAnio(anio ?? DateTime.Now.Year, prefijos);
+        }
+
+        [HttpGet("contenedores-full")]
+        public ActionResult<Dictionary<int, List<int>>> GetContenedoresFull(
+            [FromQuery] int? anio,
+            [FromQuery] string[] prefijos)
+        {
+            return _pizarraService.obtenerContenedoresFullPorAnio(anio ?? DateTime.Now.Year, prefijos);
+        }
+
     }
 }
