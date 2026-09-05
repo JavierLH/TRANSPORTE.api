@@ -67,5 +67,15 @@ namespace APIV2.Controllers
             return _pizarraService.obtenerContenedoresFullPorAnio(anio ?? DateTime.Now.Year, prefijos);
         }
 
+        // Una sola llamada devuelve las cinco mercancías: la llave es el nombre
+        // de la mercancía, no el año, porque aquí cada serie es una mercancía.
+        [HttpGet("mercancias")]
+        public ActionResult<Dictionary<string, List<int>>> GetMercancias(
+            [FromQuery] int? anio,
+            [FromQuery] string[] prefijos)
+        {
+            return _pizarraService.obtenerMercanciaPorAnio(anio ?? DateTime.Now.Year, prefijos);
+        }
+
     }
 }

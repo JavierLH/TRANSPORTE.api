@@ -249,6 +249,15 @@ namespace APIV2.Services
         /// </summary>
         private static Dictionary<int, List<int>> AgruparPorMes(int anio, List<DateOnly?> fechas)
         {
+            return new Dictionary<int, List<int>> { [anio] = ContarPorMes(anio, fechas) };
+        }
+
+        /// <summary>
+        /// Reparte las fechas en los 12 meses del año. Siempre devuelve 12
+        /// valores: un mes sin movimiento es un cero, no una posición ausente.
+        /// </summary>
+        private static List<int> ContarPorMes(int anio, IEnumerable<DateOnly?> fechas)
+        {
             var valoresPorMes = new List<int>();
 
             for (int mes = 1; mes <= 12; mes++)
@@ -259,7 +268,63 @@ namespace APIV2.Services
                 valoresPorMes.Add(cantidad);
             }
 
-            return new Dictionary<int, List<int>> { [anio] = valoresPorMes };
+            return valoresPorMes;
+        }
+
+        /// <summary>Las cinco mercancías que se grafican, en orden de captura.</summary>
+        private static readonly string[] MercanciasGraficadas =
+            { "GENERAL", "PELIGROSOREFRIGERADO", "REFRIGERADO", "PELIGROSO", "COMPLEMENTO" };
+
+        /// <summary>
+        /// Viajes del año contados por mercancía y por mes.
+        ///
+        /// Devuelve mercancía → 12 valores. Se usa string como llave y no int
+        /// (como en los otros métodos, donde la llave es el año) porque aquí las
+        /// series son las mercancías: el año ya viene fijo en el parámetro.
+        ///
+        /// Las cinco llaves siempre vienen, aunque una no tenga movimiento, para
+        /// que la gráfica no cambie de series entre un año y otro.
+        /// </summary>
+        public Dictionary<string, List<int>> obtenerMercanciaPorAnio(int anio, string[] prefijos)
+        {
+            var desde = new DateOnly(anio, 1, 1);
+            var hasta = new DateOnly(anio + 1, 1, 1);
+
+            var consulta = this.SiilContext.pizarraDeViajes
+                .Where(e => e.FechaIda >= desde
+                         && e.FechaIda < hasta
+                         && e.Mercancia != null
+                         && MercanciasGraficadas.Contains(e.Mercancia));
+
+            consulta = FiltrarPorPrefijos(consulta, prefijos);
+
+            // Mismo Distinct que en los contenedores: la tabla trae renglones
+            // repetidos y contarlos crudos infla el total.
+            var renglones = consulta
+                .Select(e => new
+                {
+                    e.Viaje,
+                    e.Estado,
+                    e.Liquidacion,
+                    e.Tractor,
+                    e.FechaIda,
+                    e.Mercancia
+                })
+                .Distinct()
+                .ToList();
+
+            var resultado = new Dictionary<string, List<int>>();
+
+            foreach (var mercancia in MercanciasGraficadas)
+            {
+                var fechas = renglones
+                    .Where(e => e.Mercancia == mercancia)
+                    .Select(e => e.FechaIda);
+
+                resultado[mercancia] = ContarPorMes(anio, fechas);
+            }
+
+            return resultado;
         }
 
     }
