@@ -414,8 +414,11 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 290, NombrePermiso = "EJECUTIVOS", RutaModulo="siil/vikingo/trafico/catalogo/ejecutivos", Padre = 172 },
             new Permiso { IdPermiso = 291, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/karve/trafico/catalogo/ejecutivos", Padre = 256 },
             new Permiso { IdPermiso = 292, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/drakkar/trafico/catalogo/ejecutivos", Padre = 200 },
-            new Permiso { IdPermiso = 293, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/letca/trafico/catalogo/ejecutivos", Padre = 228 }
-            
+            new Permiso { IdPermiso = 293, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/letca/trafico/catalogo/ejecutivos", Padre = 228 },
+
+
+            new Permiso { IdPermiso = 294, NombrePermiso = "ADMINISTRAR ROLES DE EMPRESAS", RutaModulo = "siil/configuraciones/administrarrolesempresas", Padre = 278 }
+    
             );
 
         // 7. ROLES_PERMISOS

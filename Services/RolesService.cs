@@ -14,6 +14,14 @@ namespace API.Services
             _context = context;
         }
 
+        public void agregarRol(Role rol)
+        {
+            this._context.Roles.Add(rol);
+            this._context.SaveChanges();
+        }
+
+       
+
         public Task<List<Role>> ObtenerRoles(params int[] idRoles)
         {
             return this._context.Roles.Where(r => idRoles.Contains(r.IdRol)).ToListAsync();

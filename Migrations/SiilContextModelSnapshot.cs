@@ -2238,6 +2238,13 @@ namespace APIV2.Migrations
                             NombrePermiso = "EJECUTIVOS",
                             Padre = 228,
                             RutaModulo = "siil/letca/trafico/catalogo/ejecutivos"
+                        },
+                        new
+                        {
+                            IdPermiso = 294,
+                            NombrePermiso = "ADMINISTRAR ROLES DE EMPRESAS",
+                            Padre = 278,
+                            RutaModulo = "siil/configuraciones/administrarrolesempresas"
                         });
                 });
 
