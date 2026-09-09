@@ -271,6 +271,50 @@ namespace APIV2.Services
             return valoresPorMes;
         }
 
+        /// <summary>
+        /// SQL Server no admite más de 2100 parámetros por consulta, y un
+        /// Contains los manda uno por elemento. Con archivos grandes hay que
+        /// partir la lista en tandas.
+        /// </summary>
+        private const int TamanoDeTandaDeGuias = 1000;
+
+        /// <summary>
+        /// De las guías recibidas, devuelve las que YA existen en la pizarra.
+        /// Se resuelve en bloque y no una por una porque quien la usa es la
+        /// importación de Excel: un archivo trae cientos de renglones, y
+        /// preguntar de uno en uno serían cientos de consultas.
+        /// </summary>
+        public List<int> obtenerGuiasExistentes(List<int> guias)
+        {
+            if (guias == null || guias.Count == 0)
+            {
+                return new List<int>();
+            }
+
+            // Un mismo archivo puede repetir la guía; se pregunta una sola vez.
+            var guiasUnicas = guias.Distinct().ToList();
+
+            var existentes = new List<int>();
+
+            for (int inicio = 0; inicio < guiasUnicas.Count; inicio += TamanoDeTandaDeGuias)
+            {
+                var tanda = guiasUnicas
+                    .Skip(inicio)
+                    .Take(TamanoDeTandaDeGuias)
+                    .ToList();
+
+                var encontradas = this.SiilContext.pizarraDeViajes
+                    .Where(v => tanda.Contains(v.IdGuia))
+                    .Select(v => v.IdGuia)
+                    .Distinct()
+                    .ToList();
+
+                existentes.AddRange(encontradas);
+            }
+
+            return existentes;
+        }
+
         /// <summary>Las cinco mercancías que se grafican, en orden de captura.</summary>
         private static readonly string[] MercanciasGraficadas =
             { "GENERAL", "PELIGROSOREFRIGERADO", "REFRIGERADO", "PELIGROSO", "COMPLEMENTO" };

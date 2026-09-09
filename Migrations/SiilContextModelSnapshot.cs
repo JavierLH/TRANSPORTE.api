@@ -123,6 +123,29 @@ namespace APIV2.Migrations
                     b.ToTable("changelog");
                 });
 
+            modelBuilder.Entity("APIV2.Models.Ciudad", b =>
+                {
+                    b.Property<int>("IdCiudad")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCiudad"));
+
+                    b.Property<string>("NombreCiudad")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("claveDestinoEstadoCiudad")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCiudad");
+
+                    b.HasIndex("claveDestinoEstadoCiudad");
+
+                    b.ToTable("Ciudad");
+                });
+
             modelBuilder.Entity("APIV2.Models.Clausula", b =>
                 {
                     b.Property<string>("Clausula1")
@@ -4566,6 +4589,17 @@ namespace APIV2.Migrations
                     b.ToView("vt_ProgramacionViajesWithConvenios", (string)null);
                 });
 
+            modelBuilder.Entity("APIV2.Models.Ciudad", b =>
+                {
+                    b.HasOne("APIV2.Models.DestinoEstadoCiudad", "DestinoEstadoCiudadNavigation")
+                        .WithMany("Ciudades")
+                        .HasForeignKey("claveDestinoEstadoCiudad")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DestinoEstadoCiudadNavigation");
+                });
+
             modelBuilder.Entity("APIV2.Models.Cliente", b =>
                 {
                     b.HasOne("APIV2.Models.Empresa", "IdEmpresaNavigation")
@@ -4756,6 +4790,11 @@ namespace APIV2.Migrations
             modelBuilder.Entity("APIV2.Models.DestinoEstado", b =>
                 {
                     b.Navigation("DestinoEstadoCiudads");
+                });
+
+            modelBuilder.Entity("APIV2.Models.DestinoEstadoCiudad", b =>
+                {
+                    b.Navigation("Ciudades");
                 });
 
             modelBuilder.Entity("APIV2.Models.Empresa", b =>

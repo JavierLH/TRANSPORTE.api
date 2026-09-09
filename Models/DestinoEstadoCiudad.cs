@@ -24,4 +24,8 @@ public partial class DestinoEstadoCiudad
     [InverseProperty("DestinoEstadoCiudads")]
     public virtual DestinoEstado? IdEstadoNavigation { get; set; }
 
+    /// <summary>Las ciudades que cuelgan de este destino.</summary>
+    [InverseProperty("DestinoEstadoCiudadNavigation")]
+    public virtual ICollection<Ciudad> Ciudades { get; set; } = new List<Ciudad>();
+
 }

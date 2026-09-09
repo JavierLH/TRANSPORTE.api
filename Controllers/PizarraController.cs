@@ -1,4 +1,6 @@
-﻿using APIV2.Repositorio;
+﻿using API.DTOs.Controllers.PizarraController;
+using API.DTOs.Error;
+using APIV2.Repositorio;
 using APIV2.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -75,6 +77,35 @@ namespace APIV2.Controllers
             [FromQuery] string[] prefijos)
         {
             return _pizarraService.obtenerMercanciaPorAnio(anio ?? DateTime.Now.Year, prefijos);
+        }
+
+        /// <summary>
+        /// Verifica en bloque cuáles guías ya están en la pizarra.
+        ///
+        /// Es POST y no GET porque la lista viaja en el cuerpo: un Excel puede
+        /// traer cientos de guías y no caben en un query string. Y va en bloque
+        /// y no de una en una porque la importación validaría renglón por
+        /// renglón, lo que serían cientos de peticiones para un solo archivo.
+        /// </summary>
+        [HttpPost("guias-existentes")]
+        public ActionResult<GuiasVerificadasDTO> VerificarGuias([FromBody] VerificarGuiasDTO datos)
+        {
+            if (datos == null || datos.Guias == null)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "Se requiere la lista de guías a verificar.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            var existentes = _pizarraService.obtenerGuiasExistentes(datos.Guias);
+
+            return new GuiasVerificadasDTO
+            {
+                Existentes = existentes,
+                TotalRevisadas = datos.Guias.Count
+            };
         }
 
     }

@@ -34,6 +34,8 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<DestinoEstadoCiudad> DestinoEstadoCiudads { get; set; }
 
+    public virtual DbSet<Ciudad> Ciudades { get; set; }
+
     public virtual DbSet<Ejecutivo> Ejecutivos { get; set; }
 
     public virtual DbSet<Empresa> Empresas { get; set; }
@@ -418,7 +420,9 @@ public partial class SiilContext : DbContext
 
 
             new Permiso { IdPermiso = 294, NombrePermiso = "ADMINISTRAR ROLES DE EMPRESAS", RutaModulo = "siil/configuraciones/administrarrolesempresas", Padre = 278 }
-    
+            
+
+
             );
 
         // 7. ROLES_PERMISOS
