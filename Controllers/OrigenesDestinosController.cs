@@ -115,6 +115,27 @@ namespace APIV2.Controllers
                 });
             }
 
+            // La edición puede cambiar el estado, así que se valida igual que
+            // en el alta: sin esto, un IdEstado inválido revienta con una
+            // violación de llave foránea que llega al cliente como un 500.
+            if (destino.IdEstado == null)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El destino debe pertenecer a un estado.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            if (!await _origenesDestinosService.existeEstado(destino.IdEstado.Value))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El estado indicado no existe.",
+                    ClaseConError = $"Estado con ID {destino.IdEstado} no encontrado."
+                });
+            }
+
             if (await _origenesDestinosService.obtenerDestinoPorId(idCiudad) == null)
             {
                 return StatusCode(404, new RespuestaError<string>
