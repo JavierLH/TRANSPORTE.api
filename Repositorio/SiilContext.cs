@@ -115,6 +115,30 @@ public partial class SiilContext : DbContext
         modelBuilder.Entity<JerarquiaDeRolesSP>().HasNoKey();
         modelBuilder.Entity<ObtenerTodosLosPermisosAdministrador>().HasNoKey();
 
+        // El folio del tarifario lo arma SQL Server a partir de ClaveCot, que
+        // es IDENTITY. Al derivarlo de la llave sale consecutivo y único sin
+        // que la aplicación tenga que reservar números.
+        //
+        // El CASE es para no truncar: RIGHT(..., 6) sobre un ClaveCot de siete
+        // dígitos devolvería los últimos seis y chocaría con un folio viejo.
+        modelBuilder.Entity<Tarifario>()
+            .Property(tarifario => tarifario.Folio)
+            .HasComputedColumnSql(
+                "('COT-' + CASE WHEN [ClaveCot] < 1000000 " +
+                "THEN RIGHT('000000' + CONVERT(varchar(11), [ClaveCot]), 6) " +
+                "ELSE CONVERT(varchar(11), [ClaveCot]) END)",
+                stored: true);
+
+        // HasFilter(null) quita el "WHERE [Folio] IS NOT NULL" que EF le pone
+        // solo a los índices únicos sobre columnas nullable: SQL Server no
+        // admite un filtro que mencione una columna calculada. El filtro no
+        // hacía falta de todos modos, porque la expresión nunca da NULL
+        // (ClaveCot es NOT NULL).
+        modelBuilder.Entity<Tarifario>()
+            .HasIndex(tarifario => tarifario.Folio)
+            .IsUnique()
+            .HasFilter(null);
+
         // ==========================================
         // DATOS SEMILLA (SEED DATA)
         // ==========================================

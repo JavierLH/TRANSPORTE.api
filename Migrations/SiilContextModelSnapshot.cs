@@ -3658,6 +3658,13 @@ namespace APIV2.Migrations
                     b.Property<decimal>("CostoFijoOperador")
                         .HasColumnType("decimal(18, 4)");
 
+                    b.Property<string>("Folio")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(20)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
+                        .HasComputedColumnSql("('COT-' + CASE WHEN [ClaveCot] < 1000000 THEN RIGHT('000000' + CONVERT(varchar(11), [ClaveCot]), 6) ELSE CONVERT(varchar(11), [ClaveCot]) END)", true);
+
                     b.Property<int>("IdMercancia")
                         .HasColumnType("int");
 
@@ -3685,6 +3692,9 @@ namespace APIV2.Migrations
                     b.HasKey("ClaveCot");
 
                     b.HasIndex("CodigoConfiguracion");
+
+                    b.HasIndex("Folio")
+                        .IsUnique();
 
                     b.HasIndex("IdMercancia");
 

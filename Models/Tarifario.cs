@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,6 +14,19 @@ namespace APIV2.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ClaveCot { get; set; }
+
+        /// <summary>
+        /// Folio visible, del tipo COT-000042.
+        ///
+        /// Lo calcula SQL Server a partir de ClaveCot (ver SiilContext), no la
+        /// aplicación: así sale siempre consecutivo, nunca se repite y no hay
+        /// dos altas simultáneas que puedan pelearse el mismo número.
+        /// Es de sólo lectura; asignarlo desde C# no tiene efecto.
+        /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [StringLength(20)]
+        [Unicode(false)]
+        public string? Folio { get; set; }
 
         /// <summary>La ruta a la que pertenece este renglón.</summary>
         public int IdOrigenDestino { get; set; }

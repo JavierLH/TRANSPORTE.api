@@ -25,6 +25,7 @@ builder.Services.AddScoped<PizarraService>();
 builder.Services.AddScoped<ClientesService>();
 builder.Services.AddScoped<OperadoresService>();
 builder.Services.AddScoped<OrigenesDestinosService>();
+builder.Services.AddScoped<TarifarioService>();
 
 builder.Services.AddControllers();
 
