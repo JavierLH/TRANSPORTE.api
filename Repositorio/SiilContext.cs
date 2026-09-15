@@ -28,13 +28,13 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<Contenedore> Contenedores { get; set; }
 
+    public virtual DbSet<Configuracion> Configuraciones { get; set; }
+
     public virtual DbSet<Convenio> Convenios { get; set; }
 
     public virtual DbSet<DestinoEstado> DestinoEstados { get; set; }
 
     public virtual DbSet<DestinoEstadoCiudad> DestinoEstadoCiudads { get; set; }
-
-    public virtual DbSet<Ciudad> Ciudades { get; set; }
 
     public virtual DbSet<Ejecutivo> Ejecutivos { get; set; }
 
@@ -46,9 +46,13 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<Operacion> Operacions { get; set; }
 
+    public virtual DbSet<Mercancias> Mercancias { get; set; }
+
     public virtual DbSet<Operadore> Operadores { get; set; }
 
     public virtual DbSet<Origen> Origens { get; set; }
+
+    public virtual DbSet<OrigenesDestinosTarifario> OrigenesDestinosTarifarios { get; set; }
 
     public virtual DbSet<Patio> Patios { get; set; }
 
@@ -61,6 +65,8 @@ public partial class SiilContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<RolesPermiso> RolesPermisos { get; set; }
+
+    public virtual DbSet<Tarifario> Tarifarios { get; set; }
 
     public virtual DbSet<TipoMercancium> TipoMercancia { get; set; }
 
@@ -562,6 +568,18 @@ public partial class SiilContext : DbContext
         modelBuilder.Entity<Origen>().HasData(
             new Origen { IdOrigen = 1, Origen1 = "VER" },
             new Origen { IdOrigen = 2, Origen1 = "MAN" }
+        );
+
+        modelBuilder.Entity<Mercancias>().HasData(
+            new Mercancias { CodigoMercancia = 1, Nombre = "GRAL" },
+            new Mercancias { CodigoMercancia = 2, Nombre = "DGR" },
+            new Mercancias { CodigoMercancia = 3, Nombre = "REEFER" },
+            new Mercancias { CodigoMercancia = 4, Nombre = "DGR&REEFER" }
+        );
+
+        modelBuilder.Entity<Configuracion>().HasData(
+            new Configuracion { CodigoConfiguracion = 1, Nombre = "SENCILLO" },
+            new Configuracion { CodigoConfiguracion = 2, Nombre = "FULL" }
         );
 
         modelBuilder.Entity<DestinoEstado>().HasData(

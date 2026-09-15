@@ -123,29 +123,6 @@ namespace APIV2.Migrations
                     b.ToTable("changelog");
                 });
 
-            modelBuilder.Entity("APIV2.Models.Ciudad", b =>
-                {
-                    b.Property<int>("IdCiudad")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCiudad"));
-
-                    b.Property<string>("NombreCiudad")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("claveDestinoEstadoCiudad")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdCiudad");
-
-                    b.HasIndex("claveDestinoEstadoCiudad");
-
-                    b.ToTable("Ciudad");
-                });
-
             modelBuilder.Entity("APIV2.Models.Clausula", b =>
                 {
                     b.Property<string>("Clausula1")
@@ -201,6 +178,33 @@ namespace APIV2.Migrations
                     b.HasIndex("IdEmpresa");
 
                     b.ToTable("ClientesFactura");
+                });
+
+            modelBuilder.Entity("APIV2.Models.Configuracion", b =>
+                {
+                    b.Property<int>("CodigoConfiguracion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("CodigoConfiguracion");
+
+                    b.ToTable("Configuracion");
+
+                    b.HasData(
+                        new
+                        {
+                            CodigoConfiguracion = 1,
+                            Nombre = "SENCILLO"
+                        },
+                        new
+                        {
+                            CodigoConfiguracion = 2,
+                            Nombre = "FULL"
+                        });
                 });
 
             modelBuilder.Entity("APIV2.Models.Contenedore", b =>
@@ -861,6 +865,43 @@ namespace APIV2.Migrations
                         });
                 });
 
+            modelBuilder.Entity("APIV2.Models.Mercancias", b =>
+                {
+                    b.Property<int>("CodigoMercancia")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("CodigoMercancia");
+
+                    b.ToTable("Mercancias");
+
+                    b.HasData(
+                        new
+                        {
+                            CodigoMercancia = 1,
+                            Nombre = "GRAL"
+                        },
+                        new
+                        {
+                            CodigoMercancia = 2,
+                            Nombre = "DGR"
+                        },
+                        new
+                        {
+                            CodigoMercancia = 3,
+                            Nombre = "REEFER"
+                        },
+                        new
+                        {
+                            CodigoMercancia = 4,
+                            Nombre = "DGR&REEFER"
+                        });
+                });
+
             modelBuilder.Entity("APIV2.Models.Operacion", b =>
                 {
                     b.Property<int>("IdOperacion")
@@ -937,6 +978,40 @@ namespace APIV2.Migrations
                             IdOrigen = 2,
                             Origen1 = "MAN"
                         });
+                });
+
+            modelBuilder.Entity("APIV2.Models.OrigenesDestinosTarifario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IdCiudad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdEstado")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdOrigen")
+                        .HasColumnType("int");
+
+                    b.Property<double>("LtDieselPrecio")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Ow")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdCiudad");
+
+                    b.HasIndex("IdEstado");
+
+                    b.HasIndex("IdOrigen");
+
+                    b.ToTable("OrigenesDestinosTarifario");
                 });
 
             modelBuilder.Entity("APIV2.Models.Patio", b =>
@@ -3566,6 +3641,58 @@ namespace APIV2.Migrations
                         });
                 });
 
+            modelBuilder.Entity("APIV2.Models.Tarifario", b =>
+                {
+                    b.Property<int>("ClaveCot")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClaveCot"));
+
+                    b.Property<decimal>("Casetas")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("CodigoConfiguracion")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("CostoFijoOperador")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("IdMercancia")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdOrigenDestino")
+                        .HasColumnType("int");
+
+                    b.Property<double>("KmOperador")
+                        .HasColumnType("float");
+
+                    b.Property<double>("KmxlRendimiento")
+                        .HasColumnType("float");
+
+                    b.Property<double>("OperadorMonto")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RecargaDieselRf")
+                        .HasColumnType("float");
+
+                    b.Property<decimal>("TarifaDeseadaCliente")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<double>("UtilidadDeseada")
+                        .HasColumnType("float");
+
+                    b.HasKey("ClaveCot");
+
+                    b.HasIndex("CodigoConfiguracion");
+
+                    b.HasIndex("IdMercancia");
+
+                    b.HasIndex("IdOrigenDestino");
+
+                    b.ToTable("Tarifario");
+                });
+
             modelBuilder.Entity("APIV2.Models.TipoMercancium", b =>
                 {
                     b.Property<int>("IdTipoMercancia")
@@ -4589,17 +4716,6 @@ namespace APIV2.Migrations
                     b.ToView("vt_ProgramacionViajesWithConvenios", (string)null);
                 });
 
-            modelBuilder.Entity("APIV2.Models.Ciudad", b =>
-                {
-                    b.HasOne("APIV2.Models.DestinoEstadoCiudad", "DestinoEstadoCiudadNavigation")
-                        .WithMany("Ciudades")
-                        .HasForeignKey("claveDestinoEstadoCiudad")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DestinoEstadoCiudadNavigation");
-                });
-
             modelBuilder.Entity("APIV2.Models.Cliente", b =>
                 {
                     b.HasOne("APIV2.Models.Empresa", "IdEmpresaNavigation")
@@ -4679,6 +4795,33 @@ namespace APIV2.Migrations
                     b.Navigation("IdEmpresaNavigation");
                 });
 
+            modelBuilder.Entity("APIV2.Models.OrigenesDestinosTarifario", b =>
+                {
+                    b.HasOne("APIV2.Models.DestinoEstadoCiudad", "IdCiudadNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdCiudad")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIV2.Models.DestinoEstado", "IdEstadoNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdEstado")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIV2.Models.Origen", "IdOrigenNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdOrigen")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdCiudadNavigation");
+
+                    b.Navigation("IdEstadoNavigation");
+
+                    b.Navigation("IdOrigenNavigation");
+                });
+
             modelBuilder.Entity("APIV2.Models.Permiso", b =>
                 {
                     b.HasOne("APIV2.Models.Permiso", "PadreNavigation")
@@ -4751,6 +4894,33 @@ namespace APIV2.Migrations
                     b.Navigation("IdRolNavigation");
                 });
 
+            modelBuilder.Entity("APIV2.Models.Tarifario", b =>
+                {
+                    b.HasOne("APIV2.Models.Configuracion", "CodigoConfiguracionNavigation")
+                        .WithMany()
+                        .HasForeignKey("CodigoConfiguracion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIV2.Models.Mercancias", "IdMercanciaNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdMercancia")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIV2.Models.OrigenesDestinosTarifario", "IdOrigenDestinoNavigation")
+                        .WithMany("Tarifas")
+                        .HasForeignKey("IdOrigenDestino")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CodigoConfiguracionNavigation");
+
+                    b.Navigation("IdMercanciaNavigation");
+
+                    b.Navigation("IdOrigenDestinoNavigation");
+                });
+
             modelBuilder.Entity("APIV2.Models.TipoMercancium", b =>
                 {
                     b.HasOne("APIV2.Models.Empresa", "IdEmpresaNavigation")
@@ -4792,11 +4962,6 @@ namespace APIV2.Migrations
                     b.Navigation("DestinoEstadoCiudads");
                 });
 
-            modelBuilder.Entity("APIV2.Models.DestinoEstadoCiudad", b =>
-                {
-                    b.Navigation("Ciudades");
-                });
-
             modelBuilder.Entity("APIV2.Models.Empresa", b =>
                 {
                     b.Navigation("EquipoEmpresaCompartidos");
@@ -4816,6 +4981,11 @@ namespace APIV2.Migrations
             modelBuilder.Entity("APIV2.Models.Funcion", b =>
                 {
                     b.Navigation("RolesPermisos");
+                });
+
+            modelBuilder.Entity("APIV2.Models.OrigenesDestinosTarifario", b =>
+                {
+                    b.Navigation("Tarifas");
                 });
 
             modelBuilder.Entity("APIV2.Models.Permiso", b =>
