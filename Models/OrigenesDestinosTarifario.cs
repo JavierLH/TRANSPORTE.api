@@ -24,11 +24,16 @@ namespace APIV2.Models
 
         public int IdCiudad { get; set; }
 
+        /// <summary>Empresa dueña de esta ruta del tarifario.</summary>
+        public int IdEmpresa { get; set; }
+
         /// <summary>Precio del litro de diesel con el que se cotizó.</summary>
         public double LtDieselPrecio { get; set; }
 
         /// <summary>Distancia de ida (one way), en kilómetros.</summary>
         public double Ow { get; set; }
+
+
 
         [ForeignKey("IdOrigen")]
         public virtual Origen? IdOrigenNavigation { get; set; }
@@ -38,6 +43,10 @@ namespace APIV2.Models
 
         [ForeignKey("IdCiudad")]
         public virtual DestinoEstadoCiudad? IdCiudadNavigation { get; set; }
+
+        [ForeignKey("IdEmpresa")]
+        [InverseProperty("OrigenesDestinosTarifarios")]
+        public virtual Empresa? IdEmpresaNavigation { get; set; }
 
         /// <summary>Los renglones de tarifa que cuelgan de esta ruta.</summary>
         [InverseProperty("IdOrigenDestinoNavigation")]

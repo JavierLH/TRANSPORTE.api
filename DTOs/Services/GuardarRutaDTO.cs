@@ -22,6 +22,10 @@ namespace API.DTOs.Services
 
         public double Ow { get; set; }
 
+
+        public int IdEmpresa { get; set; }
+
+
         public List<RenglonTarifarioDTO> Renglones { get; set; } = new List<RenglonTarifarioDTO>();
     }
 }

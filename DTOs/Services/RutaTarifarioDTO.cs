@@ -25,6 +25,9 @@ namespace API.DTOs.Services
 
         public string? Destino { get; set; }
 
+        /// <summary>Empresa dueña de la ruta. La usa el flujo que consulta por empresa.</summary>
+        public int IdEmpresa { get; set; }
+
         public double LtDieselPrecio { get; set; }
 
         public double Ow { get; set; }

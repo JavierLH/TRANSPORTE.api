@@ -991,6 +991,9 @@ namespace APIV2.Migrations
                     b.Property<int>("IdCiudad")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdEmpresa")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdEstado")
                         .HasColumnType("int");
 
@@ -1006,6 +1009,8 @@ namespace APIV2.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdCiudad");
+
+                    b.HasIndex("IdEmpresa");
 
                     b.HasIndex("IdEstado");
 
@@ -4813,6 +4818,12 @@ namespace APIV2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("APIV2.Models.Empresa", "IdEmpresaNavigation")
+                        .WithMany("OrigenesDestinosTarifarios")
+                        .HasForeignKey("IdEmpresa")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("APIV2.Models.DestinoEstado", "IdEstadoNavigation")
                         .WithMany()
                         .HasForeignKey("IdEstado")
@@ -4826,6 +4837,8 @@ namespace APIV2.Migrations
                         .IsRequired();
 
                     b.Navigation("IdCiudadNavigation");
+
+                    b.Navigation("IdEmpresaNavigation");
 
                     b.Navigation("IdEstadoNavigation");
 
@@ -4975,6 +4988,8 @@ namespace APIV2.Migrations
             modelBuilder.Entity("APIV2.Models.Empresa", b =>
                 {
                     b.Navigation("EquipoEmpresaCompartidos");
+
+                    b.Navigation("OrigenesDestinosTarifarios");
 
                     b.Navigation("Roles");
 

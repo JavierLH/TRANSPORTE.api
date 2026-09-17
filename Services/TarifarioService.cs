@@ -43,6 +43,7 @@ namespace APIV2.Services
                     Destino = ruta.IdCiudadNavigation != null
                         ? ruta.IdCiudadNavigation.DestinoEstadoCiudad1
                         : null,
+                    IdEmpresa = ruta.IdEmpresa,
                     LtDieselPrecio = ruta.LtDieselPrecio,
                     Ow = ruta.Ow,
 
@@ -63,7 +64,62 @@ namespace APIV2.Services
                             OperadorMonto = renglon.OperadorMonto
                         })
                         .ToList()
-                })
+                }
+                )
+                .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Igual que <see cref="buscarRuta"/>, pero acotando la búsqueda a una
+        /// empresa: la misma combinación origen + estado + destino puede existir
+        /// para VK y para KV, así que sin el filtro por empresa una consultaría
+        /// la ruta de la otra.
+        /// </summary>
+        public async Task<RutaTarifarioDTO?> buscarRutaPorEmpresa(int idOrigen, int idEstado, int idCiudad, int idEmpresa)
+        {
+            return await this.siilContext.OrigenesDestinosTarifarios
+                .Where(ruta => ruta.IdOrigen == idOrigen
+                            && ruta.IdEstado == idEstado
+                            && ruta.IdCiudad == idCiudad
+                            && ruta.IdEmpresa == idEmpresa)
+                .Select(ruta => new RutaTarifarioDTO
+                {
+                    Id = ruta.Id,
+                    IdOrigen = ruta.IdOrigen,
+                    Origen = ruta.IdOrigenNavigation != null
+                        ? ruta.IdOrigenNavigation.Origen1
+                        : null,
+                    IdEstado = ruta.IdEstado,
+                    Estado = ruta.IdEstadoNavigation != null
+                        ? ruta.IdEstadoNavigation.DestinoEstado1
+                        : null,
+                    IdCiudad = ruta.IdCiudad,
+                    Destino = ruta.IdCiudadNavigation != null
+                        ? ruta.IdCiudadNavigation.DestinoEstadoCiudad1
+                        : null,
+                    IdEmpresa = ruta.IdEmpresa,
+                    LtDieselPrecio = ruta.LtDieselPrecio,
+                    Ow = ruta.Ow,
+
+                    // Sin esto la edición recuperaría sólo la cabecera y los
+                    // bloques por mercancía saldrían en blanco.
+                    Renglones = ruta.Tarifas
+                        .Select(renglon => new RenglonTarifarioDTO
+                        {
+                            IdMercancia = renglon.IdMercancia,
+                            CodigoConfiguracion = renglon.CodigoConfiguracion,
+                            KmxlRendimiento = renglon.KmxlRendimiento,
+                            CostoFijoOperador = renglon.CostoFijoOperador,
+                            RecargaDieselRf = renglon.RecargaDieselRf,
+                            TarifaDeseadaCliente = renglon.TarifaDeseadaCliente,
+                            UtilidadDeseada = renglon.UtilidadDeseada,
+                            Casetas = renglon.Casetas,
+                            KmOperador = renglon.KmOperador,
+                            OperadorMonto = renglon.OperadorMonto
+                        })
+                        .ToList()
+                }
+                )
                 .FirstOrDefaultAsync();
         }
 
@@ -118,6 +174,57 @@ namespace APIV2.Services
 
             // Se reconsulta para devolver los nombres ya resueltos por el JOIN.
             return (await this.buscarRuta(dto.IdOrigen, dto.IdEstado, dto.IdCiudad))!;
+        }
+
+        /// <summary>
+        /// Igual que <see cref="guardarRuta"/>, pero persistiendo la empresa: la
+        /// ruta se identifica por origen + estado + destino + empresa, de modo
+        /// que VK y KV puedan tener su propia ruta para la misma combinación sin
+        /// que una pise a la otra.
+        /// </summary>
+        public async Task<RutaTarifarioDTO> guardarRutaPorEmpresa(GuardarRutaDTO dto)
+        {
+            await using var transaccion = await this.siilContext.Database.BeginTransactionAsync();
+
+            var ruta = await this.siilContext.OrigenesDestinosTarifarios
+                .FirstOrDefaultAsync(r => r.IdOrigen == dto.IdOrigen
+                                       && r.IdEstado == dto.IdEstado
+                                       && r.IdCiudad == dto.IdCiudad
+                                       && r.IdEmpresa == dto.IdEmpresa);
+
+            if (ruta == null)
+            {
+                ruta = new OrigenesDestinosTarifario
+                {
+                    IdOrigen = dto.IdOrigen,
+                    IdEstado = dto.IdEstado,
+                    IdCiudad = dto.IdCiudad,
+                    IdEmpresa = dto.IdEmpresa,
+                    LtDieselPrecio = dto.LtDieselPrecio,
+                    Ow = dto.Ow
+                };
+
+                this.siilContext.OrigenesDestinosTarifarios.Add(ruta);
+            }
+            else
+            {
+                // Origen, estado, destino y empresa son los que la identifican:
+                // sólo se actualiza lo demás.
+                ruta.LtDieselPrecio = dto.LtDieselPrecio;
+                ruta.Ow = dto.Ow;
+            }
+
+            // Primer guardado: hace falta que la ruta tenga Id para poder
+            // colgarle los renglones.
+            await this.siilContext.SaveChangesAsync();
+
+            await this.guardarRenglones(ruta.Id, dto.Renglones);
+
+            await this.siilContext.SaveChangesAsync();
+            await transaccion.CommitAsync();
+
+            // Se reconsulta para devolver los nombres ya resueltos por el JOIN.
+            return (await this.buscarRutaPorEmpresa(dto.IdOrigen, dto.IdEstado, dto.IdCiudad, dto.IdEmpresa))!;
         }
 
         /// <summary>

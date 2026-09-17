@@ -30,4 +30,7 @@ public partial class Empresa
     [InverseProperty("IdEmpresaNavigation")]
     public virtual ICollection<TipoMercancium> TipoMercancia { get; set; } = new List<TipoMercancium>();
 
+    [InverseProperty("IdEmpresaNavigation")]
+    public virtual ICollection<OrigenesDestinosTarifario> OrigenesDestinosTarifarios { get; set; } = new List<OrigenesDestinosTarifario>();
+
 }
