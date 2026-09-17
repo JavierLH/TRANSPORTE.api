@@ -150,11 +150,17 @@ namespace APIV2.Controllers
                 });
             }
 
-            var errorDeRenglones = await ValidarRenglones(dto.Renglones);
-
-            if (errorDeRenglones != null)
+            // Los renglones son opcionales aquí: el modal compartido guarda por
+            // etapas y en la primera sólo manda el encabezado. Cuando lleguen
+            // los bloques por mercancía sí se validan.
+            if (dto.Renglones != null && dto.Renglones.Count > 0)
             {
-                return errorDeRenglones;
+                var errorDeRenglones = await ValidarRenglones(dto.Renglones);
+
+                if (errorDeRenglones != null)
+                {
+                    return errorDeRenglones;
+                }
             }
 
             var ruta = await _tarifarioService.guardarRutaPorEmpresa(dto);
