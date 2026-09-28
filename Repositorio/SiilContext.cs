@@ -8,6 +8,20 @@ namespace APIV2.Repositorio;
 
 public partial class SiilContext : DbContext
 {
+    /// <summary>
+    /// Hash BCrypt del administrador semilla.
+    ///
+    /// Va como constante y no como BCrypt.HashPassword(...): el hash lleva un
+    /// salt aleatorio, así que calcularlo aquí daría un valor distinto en cada
+    /// Add-Migration y EF generaría un UpdateData cada vez.
+    ///
+    /// Para cambiarlo: pon temporalmente en Program.cs
+    ///     Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("laQueQuieras"));
+    /// corre la API, copia lo que imprima y pégalo aquí.
+    /// </summary>
+    private const string HashAdministradorSemilla =
+        "$2a$11$myxIoXvLUhCrniJ.c68l/uXtJQJNinWnKl4XtZTpwRIYcGIrrmt6O";
+
     public SiilContext()
     {
     }
@@ -230,7 +244,20 @@ public partial class SiilContext : DbContext
         // Nota: 'Roladministrador' probablemente se generó como un 'bool' al ser un bit en SQL.
         modelBuilder.Entity<UsuariosSistema>().HasData(
             new UsuariosSistema { IdUsuario = 3, Nombre = "TRAFICO1", ApPaterno = "TRAFICO", ApMaterno = "TRAFICO", Usuario = "TRAFICO1", Contrasena = "123", Roladministrador = false },
-            new UsuariosSistema { IdUsuario = 4, Nombre = "JAVIER", ApPaterno = null, ApMaterno = null, Usuario = "sJAVIER", Contrasena = "123", Roladministrador = true }
+            new UsuariosSistema { IdUsuario = 4, Nombre = "JAVIER", ApPaterno = null, ApMaterno = null, Usuario = "sJAVIER", Contrasena = "123", Roladministrador = true },
+
+            // Administrador semilla: el único que existe en una base recién
+            // creada, y desde el que se dan de alta los demás usuarios.
+            new UsuariosSistema
+            {
+                IdUsuario = 7,
+                Nombre = "ADMINISTRADOR",
+                ApPaterno = null,
+                ApMaterno = null,
+                Usuario = "admin",
+                Contrasena = HashAdministradorSemilla,
+                Roladministrador = true
+            }
         );
 
         modelBuilder.Entity<TipoPatio>().HasData(

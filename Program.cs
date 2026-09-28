@@ -15,6 +15,8 @@ builder.Services.AddDbContext<SiilContext>(options =>
 
 builder.Services.AddHttpContextAccessor();
 
+Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("SILLAdministrador@@"));
+
 builder.Services.AddScoped<UsuariosSistemaService>();
 builder.Services.AddScoped<RolesService>();
 builder.Services.AddScoped<ProgramacionViajesService>();

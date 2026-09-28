@@ -4019,6 +4019,14 @@ namespace APIV2.Migrations
                             Nombre = "JAVIER",
                             Roladministrador = true,
                             Usuario = "sJAVIER"
+                        },
+                        new
+                        {
+                            IdUsuario = 7,
+                            Contrasena = "$2a$11$myxIoXvLUhCrniJ.c68l/uXtJQJNinWnKl4XtZTpwRIYcGIrrmt6O",
+                            Nombre = "ADMINISTRADOR",
+                            Roladministrador = true,
+                            Usuario = "admin"
                         });
                 });
 

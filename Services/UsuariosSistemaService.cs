@@ -23,7 +23,7 @@ namespace API.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IniciarSesionServicioDTO> buscarPorUsuarioYContraseña(UsuariosSistema usuarioSistema)
+        /*public async Task<IniciarSesionServicioDTO> buscarPorUsuarioYContraseña(UsuariosSistema usuarioSistema)
         {
             if (string.IsNullOrEmpty(usuarioSistema.Usuario) || string.IsNullOrEmpty(usuarioSistema.Contrasena))
             {
@@ -48,6 +48,66 @@ namespace API.Services
                 ApPaterno = usuarioSistema1.First().ApPaterno,
                 ApMaterno = usuarioSistema1.First().ApMaterno
             };
+        }*/
+
+        public async Task<IniciarSesionServicioDTO> buscarPorUsuarioYContraseña(UsuariosSistema usuarioSistema)
+        {
+            if (string.IsNullOrEmpty(usuarioSistema.Usuario) || string.IsNullOrEmpty(usuarioSistema.Contrasena))
+            {
+                return null;
+            }
+
+            UsuariosSistema usuarioEncontrado = await this._context.UsuariosSistemas
+                .FirstOrDefaultAsync(usuario => usuario.Usuario == usuarioSistema.Usuario);
+
+            if (usuarioEncontrado == null)
+            {
+                return null;
+            }
+
+            bool contrasenaValida;
+
+            if (EsHash(usuarioEncontrado.Contrasena))
+            {
+                contrasenaValida = BCrypt.Net.BCrypt.Verify(
+                    usuarioSistema.Contrasena,
+                    usuarioEncontrado.Contrasena);
+            }
+            else
+            {
+
+                contrasenaValida = usuarioEncontrado.Contrasena == usuarioSistema.Contrasena;
+
+                if (contrasenaValida)
+                {
+                    usuarioEncontrado.Contrasena = BCrypt.Net.BCrypt.HashPassword(usuarioSistema.Contrasena);
+                    await this._context.SaveChangesAsync();
+                }
+            }
+
+            if (!contrasenaValida)
+            {
+                return null;
+            }
+
+            return new IniciarSesionServicioDTO
+            {
+                Username = usuarioEncontrado.Usuario,
+                IdUsuario = usuarioEncontrado.IdUsuario,
+                Nombre = usuarioEncontrado.Nombre,
+                ApPaterno = usuarioEncontrado.ApPaterno,
+                ApMaterno = usuarioEncontrado.ApMaterno
+            };
+        }
+
+        /// <summary>
+        /// Un hash de BCrypt siempre empieza con $2a$, $2b$ o $2y$. Sirve para
+        /// distinguir los registros ya convertidos de los que siguen en claro.
+        /// </summary>
+        private static bool EsHash(string valor)
+        {
+            return valor != null
+                && (valor.StartsWith("$2a$") || valor.StartsWith("$2b$") || valor.StartsWith("$2y$"));
         }
 
         public async Task<List<JerarquiaDeRolesSP>> obtenerJerarquiaDeRoles(int rol)
