@@ -110,6 +110,211 @@ namespace API.Services
                 && (valor.StartsWith("$2a$") || valor.StartsWith("$2b$") || valor.StartsWith("$2y$"));
         }
 
+        // ─── Alta, edición y baja de usuarios ────────────────────────────
+
+        /// <summary>
+        /// Da de alta el usuario con la contraseña ya encriptada y le asigna
+        /// sus pares empresa/rol. Todo va en una transacción: un usuario
+        /// guardado a medias, sin sus roles, no podría entrar a nada.
+        /// </summary>
+        public async Task<UsuariosSistema> crearUsuario(CrearUsuarioDTO dto)
+        {
+            await using var transaccion = await this._context.Database.BeginTransactionAsync();
+
+            var usuario = new UsuariosSistema
+            {
+                Nombre = dto.Nombre,
+                ApPaterno = dto.ApPaterno,
+                ApMaterno = dto.ApMaterno,
+                Usuario = dto.Usuario,
+
+                // Lo único que no se guarda tal como llega.
+                Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena),
+                Roladministrador = dto.Roladministrador
+            };
+
+            this._context.UsuariosSistemas.Add(usuario);
+
+            // IdUsuario es IDENTITY: hay que guardar primero para tenerlo.
+            await this._context.SaveChangesAsync();
+
+            this.asignarEmpresasYRoles(usuario.IdUsuario, dto.EmpresasAsociadas);
+
+            await this._context.SaveChangesAsync();
+            await transaccion.CommitAsync();
+
+            return usuario;
+        }
+
+        /// <summary>
+        /// Actualiza los datos del usuario y reemplaza sus asignaciones.
+        ///
+        /// Se trae el registro y se asignan los campos uno por uno en vez de
+        /// marcar la entidad como Modified: así la contraseña no entra en el
+        /// UPDATE y no hay forma de borrar el hash desde esta pantalla.
+        /// </summary>
+        public async Task<bool> actualizarUsuario(ActualizarUsuarioDTO dto)
+        {
+            var usuario = await this._context.UsuariosSistemas
+                .FindAsync(dto.IdUsuario);
+
+            if (usuario == null)
+            {
+                return false;
+            }
+
+            await using var transaccion = await this._context.Database.BeginTransactionAsync();
+
+            usuario.Nombre = dto.Nombre;
+            usuario.ApPaterno = dto.ApPaterno;
+            usuario.ApMaterno = dto.ApMaterno;
+            usuario.Usuario = dto.Usuario;
+            usuario.Roladministrador = dto.Roladministrador;
+
+            // Las asignaciones se reemplazan completas: la fila de
+            // UsuarioEmpresaRol no tiene nada más que su llave compuesta, así
+            // que borrar e insertar no pierde información.
+            var asignacionesActuales = await this._context.UsuarioEmpresaRols
+                .Where(uer => uer.IdUsuario == dto.IdUsuario)
+                .ToListAsync();
+
+            this._context.UsuarioEmpresaRols.RemoveRange(asignacionesActuales);
+            await this._context.SaveChangesAsync();
+
+            this.asignarEmpresasYRoles(dto.IdUsuario, dto.EmpresasAsociadas);
+
+            await this._context.SaveChangesAsync();
+            await transaccion.CommitAsync();
+
+            return true;
+        }
+
+        private void asignarEmpresasYRoles(int idUsuario, List<EmpresaAsociadaDTO> asignaciones)
+        {
+            if (asignaciones == null || asignaciones.Count == 0)
+            {
+                return;
+            }
+
+            // La llave es (IdUsuario, IdEmpresa, IdRol): un par repetido en la
+            // petición reventaría el SaveChanges por llave duplicada.
+            var unicas = asignaciones
+                .GroupBy(a => new { a.IdEmpresa, a.IdRol })
+                .Select(g => g.First());
+
+            foreach (var asignacion in unicas)
+            {
+                this._context.UsuarioEmpresaRols.Add(new APIV2.Models.UsuarioEmpresaRol
+                {
+                    IdUsuario = idUsuario,
+                    IdEmpresa = asignacion.IdEmpresa,
+                    IdRol = asignacion.IdRol
+                });
+            }
+        }
+
+        /// <summary>
+        /// Cambia la contraseña. Si se manda la actual, se verifica primero:
+        /// es el caso del usuario cambiando la suya. Un administrador que
+        /// resetea la de otro la manda vacía.
+        /// </summary>
+        public async Task<bool> cambiarContrasena(int idUsuario, CambiarContrasenaDTO dto)
+        {
+            var usuario = await this._context.UsuariosSistemas.FindAsync(idUsuario);
+
+            if (usuario == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(dto.ContrasenaActual))
+            {
+                bool actualEsCorrecta = EsHash(usuario.Contrasena)
+                    ? BCrypt.Net.BCrypt.Verify(dto.ContrasenaActual, usuario.Contrasena)
+                    : usuario.Contrasena == dto.ContrasenaActual;
+
+                if (!actualEsCorrecta)
+                {
+                    return false;
+                }
+            }
+
+            usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.ContrasenaNueva);
+            await this._context.SaveChangesAsync();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Borra el usuario y sus asignaciones.
+        ///
+        /// Las asignaciones van primero: UsuarioEmpresaRol tiene llave foránea
+        /// a UsuariosSistema, así que borrar el usuario de frente revienta con
+        /// una violación de integridad si tiene aunque sea un rol.
+        /// </summary>
+        public async Task eliminarUsuario(int idUsuario)
+        {
+            await using var transaccion = await this._context.Database.BeginTransactionAsync();
+
+            await this._context.UsuarioEmpresaRols
+                .Where(uer => uer.IdUsuario == idUsuario)
+                .ExecuteDeleteAsync();
+
+            await this._context.UsuariosSistemas
+                .Where(usuario => usuario.IdUsuario == idUsuario)
+                .ExecuteDeleteAsync();
+
+            await transaccion.CommitAsync();
+        }
+
+        public async Task<bool> existeUsuarioPorId(int idUsuario)
+        {
+            return await this._context.UsuariosSistemas
+                .AnyAsync(usuario => usuario.IdUsuario == idUsuario);
+        }
+
+        /// <summary>
+        /// Evita dos usuarios con el mismo nombre de acceso: el login busca
+        /// con FirstOrDefault y con duplicados agarraría siempre al primero,
+        /// dejando al segundo sin poder entrar nunca.
+        /// </summary>
+        public async Task<bool> existeNombreDeUsuario(string nombreDeUsuario, int? idAExcluir = null)
+        {
+            return await this._context.UsuariosSistemas
+                .AnyAsync(usuario => usuario.Usuario == nombreDeUsuario
+                                  && (idAExcluir == null || usuario.IdUsuario != idAExcluir));
+        }
+
+        /// <summary>Comprueba que existan todas las empresas y roles indicados.</summary>
+        public async Task<string?> validarEmpresasYRoles(List<EmpresaAsociadaDTO> asignaciones)
+        {
+            if (asignaciones == null || asignaciones.Count == 0)
+            {
+                return null;
+            }
+
+            var empresas = asignaciones.Select(a => a.IdEmpresa).Distinct().ToList();
+            var roles = asignaciones.Select(a => a.IdRol).Distinct().ToList();
+
+            int empresasEncontradas = await this._context.Empresas
+                .CountAsync(e => empresas.Contains(e.IdEmpresa));
+
+            if (empresasEncontradas != empresas.Count)
+            {
+                return "Alguna de las empresas indicadas no existe.";
+            }
+
+            int rolesEncontrados = await this._context.Roles
+                .CountAsync(r => roles.Contains(r.IdRol));
+
+            if (rolesEncontrados != roles.Count)
+            {
+                return "Alguno de los roles indicados no existe.";
+            }
+
+            return null;
+        }
+
         public async Task<List<JerarquiaDeRolesSP>> obtenerJerarquiaDeRoles(int rol)
         {
             int idRolBuscado = rol;

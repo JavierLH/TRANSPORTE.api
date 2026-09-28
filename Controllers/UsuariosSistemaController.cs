@@ -96,10 +96,15 @@ namespace API.Controllers
             };
         }
 
+        /// <summary>
+        /// Se proyecta a DTO en vez de devolver la entidad: ésta trae la
+        /// columna Contrasena, y publicar el hash por la API no tiene ninguna
+        /// razón de ser.
+        /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuariosSistema>>> GetUsuariosSistema()
+        public async Task<ActionResult<List<UsuarioTablaDTO>>> GetUsuariosSistema()
         {
-            return await _context.UsuariosSistemas.ToListAsync();
+            return await _usuariosSistemaService.obtenerTodosLosUsuariosTablaAsync();
         }
 
        
@@ -135,14 +140,110 @@ namespace API.Controllers
             return usuario;
         }
 
-        /*[HttpPost]
-        public async Task<ActionResult<UsuarioSistema>> PostUsuarioSistema(UsuarioSistema usuario)
+        /// <summary>
+        /// Da de alta un usuario. La contraseña llega en claro y el servicio
+        /// la encripta; la respuesta nunca la devuelve, ni en claro ni en hash.
+        /// </summary>
+        [HttpPost("registrar")]
+        public async Task<ActionResult<UsuarioTablaDTO>> CrearUsuario([FromBody] CrearUsuarioDTO dto)
         {
-            _context.UsuariosSistema.Add(usuario);
-            await _context.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(dto.Nombre))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El nombre es obligatorio.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
 
-            return CreatedAtAction(nameof(GetUsuarioSistema), new { id = usuario.IdUsuario }, usuario);
-        }*/
+            if (string.IsNullOrWhiteSpace(dto.Usuario))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El nombre de usuario es obligatorio.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Contrasena) || dto.Contrasena.Length < 8)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "La contraseña debe tener al menos 8 caracteres.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            if (await _usuariosSistemaService.existeNombreDeUsuario(dto.Usuario))
+            {
+                return StatusCode(409, new RespuestaError<string>
+                {
+                    Mensaje = "Ya existe un usuario con ese nombre de acceso.",
+                    ClaseConError = $"Usuario duplicado: {dto.Usuario}"
+                });
+            }
+
+            string? errorDeAsignaciones = await _usuariosSistemaService.validarEmpresasYRoles(dto.EmpresasAsociadas);
+
+            if (errorDeAsignaciones != null)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = errorDeAsignaciones,
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            UsuariosSistema creado = await _usuariosSistemaService.crearUsuario(dto);
+
+            return Ok(new UsuarioTablaDTO
+            {
+                IdUsuario = creado.IdUsuario,
+                NombreCompleto = $"{creado.Nombre} {creado.ApPaterno} {creado.ApMaterno}".Trim(),
+                Usuario = creado.Usuario,
+                EmpresasAsociadas = dto.EmpresasAsociadas
+            });
+        }
+
+        /// <summary>
+        /// Cambia la contraseña de un usuario. Va aparte de la edición para
+        /// que una edición de datos no pueda tocar el hash.
+        /// </summary>
+        [HttpPut("{id}/contrasena")]
+        public async Task<IActionResult> CambiarContrasena(int id, [FromBody] CambiarContrasenaDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.ContrasenaNueva) || dto.ContrasenaNueva.Length < 8)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "La contraseña debe tener al menos 8 caracteres.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            if (!await _usuariosSistemaService.existeUsuarioPorId(id))
+            {
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = "No se encontró el usuario con el ID proporcionado.",
+                    ClaseConError = $"Usuario con ID {id} no encontrado."
+                });
+            }
+
+            bool cambiada = await _usuariosSistemaService.cambiarContrasena(id, dto);
+
+            if (!cambiada)
+            {
+                // El usuario existe, así que sólo pudo fallar la verificación.
+                return StatusCode(403, new RespuestaError<string>
+                {
+                    Mensaje = "La contraseña actual no es correcta.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            return NoContent();
+        }
 
         [HttpGet("tiene-permiso")]
         public async Task<ActionResult<TienePermisoDTO>> VerificarPermisoDeRuta([FromQuery] string ruta)
@@ -166,31 +267,62 @@ namespace API.Controllers
         }
 
 
+        /// <summary>
+        /// Edita los datos del usuario y sus asignaciones de empresa/rol.
+        /// La contraseña no se toca aquí: para eso está PUT {id}/contrasena.
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuarioSistema(int id, UsuariosSistema usuario)
+        public async Task<IActionResult> PutUsuarioSistema(int id, [FromBody] ActualizarUsuarioDTO dto)
         {
-            if (id != usuario.IdUsuario)
+            if (id != dto.IdUsuario)
             {
-                return BadRequest();
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El ID de la ruta no coincide con el ID del usuario enviado.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
             }
 
-            _context.Entry(usuario).State = EntityState.Modified;
+            if (string.IsNullOrWhiteSpace(dto.Nombre) || string.IsNullOrWhiteSpace(dto.Usuario))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El nombre y el nombre de usuario son obligatorios.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
 
-            try
+            if (!await _usuariosSistemaService.existeUsuarioPorId(id))
             {
-                await _context.SaveChangesAsync();
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = "No se encontró el usuario con el ID proporcionado.",
+                    ClaseConError = $"Usuario con ID {id} no encontrado."
+                });
             }
-            catch (DbUpdateConcurrencyException)
+
+            // Se excluye el propio id para poder guardar sin cambiar el nombre.
+            if (await _usuariosSistemaService.existeNombreDeUsuario(dto.Usuario, id))
             {
-                if (!UsuarioSistemaExists(id))
+                return StatusCode(409, new RespuestaError<string>
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                    Mensaje = "Ya existe otro usuario con ese nombre de acceso.",
+                    ClaseConError = $"Usuario duplicado: {dto.Usuario}"
+                });
             }
+
+            string? errorDeAsignaciones = await _usuariosSistemaService.validarEmpresasYRoles(dto.EmpresasAsociadas);
+
+            if (errorDeAsignaciones != null)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = errorDeAsignaciones,
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            await _usuariosSistemaService.actualizarUsuario(dto);
 
             return NoContent();
         }
@@ -198,14 +330,16 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuarioSistema(int id)
         {
-            var usuario = await _context.UsuariosSistemas.FindAsync(id);
-            if (usuario == null)
+            if (!await _usuariosSistemaService.existeUsuarioPorId(id))
             {
-                return NotFound();
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = "No se encontró el usuario con el ID proporcionado.",
+                    ClaseConError = $"Usuario con ID {id} no encontrado."
+                });
             }
 
-            _context.UsuariosSistemas.Remove(usuario);
-            await _context.SaveChangesAsync();
+            await _usuariosSistemaService.eliminarUsuario(id);
 
             return NoContent();
         }
