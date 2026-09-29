@@ -138,7 +138,7 @@ namespace APIV2.Controllers
                 {
                     Mensaje = "Se requiere la empresa.",
                     ClaseConError = "Verificar elementos en la petición"
-                });
+                });x|
             }
 
             if (dto.LtDieselPrecio < 0 || dto.Ow < 0)
