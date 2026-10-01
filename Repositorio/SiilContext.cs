@@ -172,8 +172,14 @@ public partial class SiilContext : DbContext
             new Equipo { IdEquipo = 503, Clave = "24", IdTipoEquipo = 7, Descripcion = "24", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
             new Equipo { IdEquipo = 504, Clave = "25", IdTipoEquipo = 7, Descripcion = "25", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
             new Equipo { IdEquipo = 505, Clave = "26", IdTipoEquipo = 7, Descripcion = "26", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 506, Clave = "30", IdTipoEquipo = 7, Descripcion = "30", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 }
+            new Equipo { IdEquipo = 506, Clave = "30", IdTipoEquipo = 7, Descripcion = "30", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
 
+            new Equipo { IdEquipo = 363, Clave = "TR024", IdTipoEquipo = 3, Descripcion = "TR024", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 364, Clave = "TR025", IdTipoEquipo = 3, Descripcion = "TR025", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 365, Clave = "TR026", IdTipoEquipo = 3, Descripcion = "TR026", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 366, Clave = "TR027", IdTipoEquipo = 3, Descripcion = "TR027", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 367, Clave = "TR028", IdTipoEquipo = 3, Descripcion = "TR028", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 368, Clave = "TR029", IdTipoEquipo = 3, Descripcion = "TR029", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 }
             );
 
         // Estatus Viaje

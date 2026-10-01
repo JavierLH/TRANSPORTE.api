@@ -742,6 +742,60 @@ namespace APIV2.Migrations
                             Estatus = 1,
                             IdEmpresa = 3,
                             IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 363,
+                            Clave = "TR024",
+                            Descripcion = "TR024",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 364,
+                            Clave = "TR025",
+                            Descripcion = "TR025",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 365,
+                            Clave = "TR026",
+                            Descripcion = "TR026",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 366,
+                            Clave = "TR027",
+                            Descripcion = "TR027",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 367,
+                            Clave = "TR028",
+                            Descripcion = "TR028",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 368,
+                            Clave = "TR029",
+                            Descripcion = "TR029",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
                         });
                 });
 
