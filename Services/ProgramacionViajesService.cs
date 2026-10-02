@@ -229,6 +229,7 @@ namespace API.Services
                 NoConvenio = dto.NoConvenio,
                 IdTipoOperacion = dto.IdTipoOperacion,
                 IdTipoMercancia = dto.IdTipoMercancia,
+                CodigoConfiguracion = dto.CodigoConfiguracion,
                 CitaTerminal = dto.CitaTerminal,
                 Comentarios = dto.Comentarios,
                 Comision = dto.Comision,
@@ -320,6 +321,7 @@ namespace API.Services
             viajeExistente.NoConvenio = dto.NoConvenio;
             viajeExistente.IdTipoOperacion = dto.IdTipoOperacion;
             viajeExistente.IdTipoMercancia = dto.IdTipoMercancia;
+            viajeExistente.CodigoConfiguracion = dto.CodigoConfiguracion;
             viajeExistente.CitaTerminal = dto.CitaTerminal;
             viajeExistente.Comentarios = dto.Comentarios;
             viajeExistente.Comision = dto.Comision;

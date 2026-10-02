@@ -16,6 +16,9 @@ namespace APIV2.DTOs.Services
         
         public List<Operacion> Operaciones { get; set; }
 
+        /// <summary>Sencillo y full, para el combo "Tipo" del modal.</summary>
+        public List<Configuracion> Configuraciones { get; set; }
+
         public List<Origen> Origenes { get; set; }
 
         public List<DestinoEstado> DestinoEstados { get; set; }

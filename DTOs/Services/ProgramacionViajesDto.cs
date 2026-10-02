@@ -27,6 +27,9 @@ namespace API.DTOs.Services
 
         public int? IdTipoMercancia { get; set; }
 
+        /// <summary>Sencillo (1) o full (2), del catálogo Configuracion.</summary>
+        public int? CodigoConfiguracion { get; set; }
+
         public string? CitaTerminal { get; set; }
 
         public string? Comentarios { get; set; }

@@ -154,6 +154,9 @@ namespace API.Services
             var Clientes = this._siilcontext.Clientes.Where(cliente => cliente.IdEmpresa == idEmpresa).ToList();
             var tipoMercancia = this._siilcontext.TipoMercancia.Where(tipo => tipo.IdEmpresa == idEmpresa).ToList();
             var operacion = this._siilcontext.Operacions.ToList();
+            var configuraciones = this._siilcontext.Configuraciones
+                .OrderBy(configuracion => configuracion.CodigoConfiguracion)
+                .ToList();
 
             var origenes = this._siilcontext.Origens.ToList();
             var destinoEstados = this._siilcontext.DestinoEstados.AsNoTracking().ToList();
@@ -171,6 +174,7 @@ namespace API.Services
                 Clientes = Clientes,
                 tipoMercancia = tipoMercancia,
                 Operaciones = operacion,
+                Configuraciones = configuraciones,
 
                 Origenes = origenes,
                 DestinoEstados = destinoEstados,

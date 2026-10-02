@@ -2674,6 +2674,9 @@ namespace APIV2.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
+                    b.Property<int?>("CodigoConfiguracion")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comentarios")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
@@ -2921,6 +2924,8 @@ namespace APIV2.Migrations
                         .HasColumnType("varchar(max)");
 
                     b.HasKey("IdProgramacion");
+
+                    b.HasIndex("CodigoConfiguracion");
 
                     b.ToTable("ProgramacionViajes");
                 });
@@ -4941,6 +4946,15 @@ namespace APIV2.Migrations
                     b.Navigation("IdPermisoNavigation");
 
                     b.Navigation("IdUsuarioNavigation");
+                });
+
+            modelBuilder.Entity("APIV2.Models.ProgramacionViaje", b =>
+                {
+                    b.HasOne("APIV2.Models.Configuracion", "CodigoConfiguracionNavigation")
+                        .WithMany()
+                        .HasForeignKey("CodigoConfiguracion");
+
+                    b.Navigation("CodigoConfiguracionNavigation");
                 });
 
             modelBuilder.Entity("APIV2.Models.Role", b =>

@@ -35,6 +35,17 @@ public partial class ProgramacionViaje
 
     public int? IdTipoMercancia { get; set; }
 
+    /// <summary>
+    /// Tipo de la unidad: sencillo o full. Apunta al catálogo Configuracion,
+    /// el mismo que usa el tarifario, para que los dos hablen de lo mismo.
+    /// Nullable porque los viajes anteriores a esta columna no lo tienen.
+    /// </summary>
+    public int? CodigoConfiguracion { get; set; }
+
+    [ForeignKey("CodigoConfiguracion")]
+    [JsonIgnore]
+    public virtual Configuracion? CodigoConfiguracionNavigation { get; set; }
+
     [Unicode(false)]
     public string? CitaTerminal { get; set; }
 
