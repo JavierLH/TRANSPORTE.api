@@ -68,11 +68,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseDefaultFiles();     // "/" sirve index.html
+app.UseStaticFiles();      // sirve los .js, .css e imágenes de wwwroot
+
 app.UseCors("PoliticaAngular");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapFallbackToFile("index.html");   // al final
 
 app.Run();
