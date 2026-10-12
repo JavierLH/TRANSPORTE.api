@@ -521,6 +521,11 @@ namespace APIV2.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("PrefijoDocumentos")
+                        .HasMaxLength(5)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5)");
+
                     b.HasKey("IdEmpresa");
 
                     b.ToTable("Empresa");
@@ -530,25 +535,29 @@ namespace APIV2.Migrations
                         {
                             IdEmpresa = 1,
                             IdReal = 10,
-                            NombreEmpresa = "KARVE"
+                            NombreEmpresa = "KARVE",
+                            PrefijoDocumentos = "KV"
                         },
                         new
                         {
                             IdEmpresa = 2,
                             IdReal = 30,
-                            NombreEmpresa = "VIKINGO"
+                            NombreEmpresa = "VIKINGO",
+                            PrefijoDocumentos = "VV"
                         },
                         new
                         {
                             IdEmpresa = 3,
                             IdReal = 40,
-                            NombreEmpresa = "DRAKKAR"
+                            NombreEmpresa = "DRAKKAR",
+                            PrefijoDocumentos = "DK"
                         },
                         new
                         {
                             IdEmpresa = 4,
                             IdReal = 50,
-                            NombreEmpresa = "LETCA"
+                            NombreEmpresa = "LETCA",
+                            PrefijoDocumentos = "LTC"
                         });
                 });
 

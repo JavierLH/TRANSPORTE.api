@@ -192,10 +192,10 @@ public partial class SiilContext : DbContext
 
         // 1. EMPRESAS
         modelBuilder.Entity<Empresa>().HasData(
-            new Empresa { IdEmpresa = 1, NombreEmpresa = "KARVE", IdReal = 10 },
-            new Empresa { IdEmpresa = 2, NombreEmpresa = "VIKINGO", IdReal = 30 },
-            new Empresa { IdEmpresa = 3, NombreEmpresa = "DRAKKAR", IdReal = 40 },
-            new Empresa { IdEmpresa = 4, NombreEmpresa = "LETCA", IdReal = 50 }
+            new Empresa { IdEmpresa = 1, NombreEmpresa = "KARVE", IdReal = 10, PrefijoDocumentos = "KV" },
+            new Empresa { IdEmpresa = 2, NombreEmpresa = "VIKINGO", IdReal = 30, PrefijoDocumentos = "VV" },
+            new Empresa { IdEmpresa = 3, NombreEmpresa = "DRAKKAR", IdReal = 40, PrefijoDocumentos = "DK" },
+            new Empresa { IdEmpresa = 4, NombreEmpresa = "LETCA", IdReal = 50, PrefijoDocumentos = "LTC" }
         );
 
         // 2. FUNCIONES

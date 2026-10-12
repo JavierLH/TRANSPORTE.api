@@ -18,6 +18,16 @@ public partial class Empresa
 
     public int? IdReal { get; set; }
 
+    /// <summary>
+    /// Prefijo de la carpeta de documentos de cada viaje en el repositorio
+    /// EFILE: VV24419_2026 para Vikingo, KV..., DK..., LTC...
+    /// Vive en la tabla y no en el código para que cambiarlo no requiera
+    /// volver a publicar.
+    /// </summary>
+    [StringLength(5)]
+    [Unicode(false)]
+    public string? PrefijoDocumentos { get; set; }
+
     [InverseProperty("IdEmpresaNavigation")]
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 

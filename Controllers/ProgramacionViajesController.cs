@@ -107,7 +107,30 @@ namespace API.Controllers
             string idUsuario = User.FindFirst("idUsuario")?.Value;
             dto.IdUsuarioUltimaModificacion = int.Parse(idUsuario);
 
-            var viajeActualizado = await _viajesService.ActualizarViaje(id, dto);
+            ProgramacionViaje viajeActualizado;
+
+            try
+            {
+                viajeActualizado = await _viajesService.ActualizarViaje(id, dto);
+            }
+            catch (ArgumentException ex)
+            {
+                // Al cambiar cliente o fecha, la carpeta del documento se mueve;
+                // si la de destino ya existe, no se mezclan y no se guarda nada.
+                return StatusCode(409, new RespuestaError<string>
+                {
+                    Mensaje = ex.Message,
+                    ClaseConError = "Conflicto con la carpeta del documento"
+                });
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                return StatusCode(503, new RespuestaError<string>
+                {
+                    Mensaje = "No se pudo mover el documento del viaje: el repositorio de documentos no está disponible. No se guardaron los cambios.",
+                    ClaseConError = ex.Message
+                });
+            }
 
             if (viajeActualizado == null)
             {
@@ -189,24 +212,70 @@ namespace API.Controllers
                     ClaseConError = "Archivo inválido"
                 });
             }
+            catch (InvalidOperationException ex)
+            {
+                // Configuración incompleta: falta la ruta raíz o el prefijo de la empresa.
+                return StatusCode(500, new RespuestaError<string>
+                {
+                    Mensaje = ex.Message,
+                    ClaseConError = "Configuración de documentos incompleta"
+                });
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                // El repositorio vive en el NAS: si no responde o niega el
+                // acceso, el usuario debe saber que no es un problema del archivo.
+                return StatusCode(503, new RespuestaError<string>
+                {
+                    Mensaje = "El repositorio de documentos no está disponible. Intenta de nuevo más tarde.",
+                    ClaseConError = ex.Message
+                });
+            }
         }
 
         // GET: api/ProgramacionViajes/5/documento
         [HttpGet("{idProgramacion}/documento")]
         public async Task<IActionResult> DescargarDocumento(int idProgramacion)
         {
-            var documento = await _viajesService.ObtenerDocumentoDelViaje(idProgramacion);
-
-            if (documento == null)
+            try
             {
-                return StatusCode(404, new RespuestaError<string>
+                var documento = await _viajesService.ObtenerDocumentoDelViaje(idProgramacion);
+
+                if (documento == null)
                 {
-                    Mensaje = $"El viaje {idProgramacion} no tiene un documento disponible.",
-                    ClaseConError = "Documento no encontrado"
+                    return StatusCode(404, new RespuestaError<string>
+                    {
+                        Mensaje = $"El viaje {idProgramacion} no tiene un documento disponible.",
+                        ClaseConError = "Documento no encontrado"
+                    });
+                }
+
+                return File(documento.Value.Contenido, documento.Value.TipoMime, documento.Value.Nombre);
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = ex.Message,
+                    ClaseConError = "Ruta de documento inválida"
                 });
             }
-
-            return File(documento.Value.Contenido, documento.Value.TipoMime, documento.Value.Nombre);
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, new RespuestaError<string>
+                {
+                    Mensaje = ex.Message,
+                    ClaseConError = "Configuración de documentos incompleta"
+                });
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                return StatusCode(503, new RespuestaError<string>
+                {
+                    Mensaje = "El repositorio de documentos no está disponible. Intenta de nuevo más tarde.",
+                    ClaseConError = ex.Message
+                });
+            }
         }
 
         // GET: api/ProgramacionViajes/filtrar

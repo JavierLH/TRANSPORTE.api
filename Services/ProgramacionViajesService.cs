@@ -13,22 +13,61 @@ namespace API.Services
     public class ProgramacionViajesService
     {
         private readonly SiilContext _siilcontext;
-        private readonly IWebHostEnvironment _entorno;
+        private readonly IConfiguration _configuracion;
 
         /// <summary>Solo documentos: nada de imágenes ni videos.</summary>
         private static readonly string[] ExtensionesPermitidas = { ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
 
         private const long TamanoMaximoBytes = 10 * 1024 * 1024; // 10 MB
 
-        public ProgramacionViajesService(SiilContext siilContext, IWebHostEnvironment entorno)
+        public ProgramacionViajesService(SiilContext siilContext, IConfiguration configuracion)
         {
             this._siilcontext = siilContext;
-            this._entorno = entorno;
+            this._configuracion = configuracion;
         }
 
         /// <summary>
-        /// Guarda el documento en Documentos/EMPRESA/CLIENTE/AÑO/FOLIO_AÑO/archivo.ext
-        /// y persiste el nombre y la ruta relativa en el viaje.
+        /// Carpeta raíz del repositorio de documentos (Documentos:RutaRaiz).
+        /// En el servidor es la ruta UNC del NAS; en desarrollo, una carpeta
+        /// local. Si falta, se detiene aquí en lugar de escribir en cualquier
+        /// lado.
+        /// </summary>
+        private string ObtenerRutaRaiz()
+        {
+            var raiz = _configuracion["Documentos:RutaRaiz"];
+
+            if (string.IsNullOrWhiteSpace(raiz))
+            {
+                throw new InvalidOperationException("Falta configurar Documentos:RutaRaiz en appsettings.");
+            }
+
+            return raiz;
+        }
+
+        /// <summary>
+        /// Une la raíz con una ruta relativa y comprueba que el resultado quede
+        /// dentro de la raíz. Evita que un nombre manipulado ("..\..\") escriba
+        /// o lea fuera del repositorio de documentos.
+        /// </summary>
+        private static string RutaDentroDeLaRaiz(string raiz, string rutaRelativa)
+        {
+            var separador = Path.DirectorySeparatorChar;
+
+            var raizCompleta = Path.GetFullPath(raiz).TrimEnd(separador) + separador;
+            var rutaCompleta = Path.GetFullPath(Path.Combine(raiz, rutaRelativa.Replace('/', separador)));
+
+            if (!rutaCompleta.StartsWith(raizCompleta, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("La ruta del documento no es válida.");
+            }
+
+            return rutaCompleta;
+        }
+
+        /// <summary>
+        /// Guarda el documento en {RutaRaiz}/CLIENTE/AÑO/PREFIJO+FOLIO_AÑO/archivo.ext
+        /// (por ejemplo ABC-LEMERY/2026/VV24419_2026/factura.pdf) y persiste en
+        /// el viaje el nombre y la ruta relativa a la raíz.
         /// </summary>
         public async Task<ProgramacionViaje> GuardarDocumentoDelViaje(int idProgramacion, IFormFile archivo)
         {
@@ -56,28 +95,21 @@ namespace API.Services
                 return null;
             }
 
-            var empresa = await _siilcontext.Empresas
-                .FirstOrDefaultAsync(e => e.IdEmpresa == viaje.IdEmpresa);
-
-            var cliente = await _siilcontext.Clientes
-                .FirstOrDefaultAsync(c => c.IdCliente == viaje.IdCliente);
-
-            var anio = viaje.Fecha?.Year ?? DateTime.Now.Year;
-
-            var carpetaRelativa = Path.Combine(
-                "Documentos",
-                SanearNombre(empresa?.NombreEmpresa ?? "SIN_EMPRESA"),
-                SanearNombre(cliente?.NombreCliente ?? "SIN_CLIENTE"),
-                anio.ToString(),
-                $"{viaje.IdProgramacion}_{anio}"
-            );
-
-            var carpetaAbsoluta = Path.Combine(_entorno.ContentRootPath, carpetaRelativa);
-            Directory.CreateDirectory(carpetaAbsoluta);
+            var carpetaDelViaje = await CarpetaDelViaje(viaje);
 
             // Se usa solo el nombre del archivo (sin ruta) para evitar path traversal
             var nombreArchivo = SanearNombre(Path.GetFileNameWithoutExtension(archivo.FileName)) + extension;
-            var rutaAbsoluta = Path.Combine(carpetaAbsoluta, nombreArchivo);
+
+            // Relativa a la raíz y con "/": es lo que se guarda en la base, así
+            // que si el repositorio cambia de servidor sólo cambia la configuración.
+            var rutaRelativa = $"{carpetaDelViaje}/{nombreArchivo}";
+
+            var rutaAbsoluta = RutaDentroDeLaRaiz(ObtenerRutaRaiz(), rutaRelativa);
+            Directory.CreateDirectory(Path.GetDirectoryName(rutaAbsoluta)!);
+
+            // Si el archivo ya estaba, se reemplaza; en ese caso, si la base
+            // falla, no se borra, porque ya existía antes de esta carga.
+            var existiaAntes = File.Exists(rutaAbsoluta);
 
             using (var stream = new FileStream(rutaAbsoluta, FileMode.Create))
             {
@@ -85,11 +117,164 @@ namespace API.Services
             }
 
             viaje.NombreArchivo = nombreArchivo;
-            viaje.RutaArchivo = Path.Combine(carpetaRelativa, nombreArchivo).Replace("\\", "/");
+            viaje.RutaArchivo = rutaRelativa;
 
-            await _siilcontext.SaveChangesAsync();
+            try
+            {
+                await _siilcontext.SaveChangesAsync();
+            }
+            catch
+            {
+                // Sin registro en la base, el archivo quedaría huérfano en el
+                // repositorio: nadie podría encontrarlo desde el sistema.
+                if (!existiaAntes && File.Exists(rutaAbsoluta))
+                {
+                    File.Delete(rutaAbsoluta);
+                }
+
+                throw;
+            }
 
             return viaje;
+        }
+
+        /// <summary>
+        /// Carpeta del viaje relativa a la raíz: CLIENTE/AÑO/PREFIJO+FOLIO_AÑO.
+        /// Es la única regla para armarla; la usan la carga del documento y la
+        /// actualización del viaje, que mueve la carpeta si cambió alguno de
+        /// esos datos.
+        /// </summary>
+        private async Task<string> CarpetaDelViaje(ProgramacionViaje viaje)
+        {
+            var empresa = await _siilcontext.Empresas
+                .FirstOrDefaultAsync(e => e.IdEmpresa == viaje.IdEmpresa);
+
+            // Sin prefijo la carpeta quedaría "24419_2026" y no se encontraría
+            // junto a las demás del repositorio: mejor detenerse aquí.
+            if (string.IsNullOrWhiteSpace(empresa?.PrefijoDocumentos))
+            {
+                throw new InvalidOperationException(
+                    $"La empresa {empresa?.NombreEmpresa ?? viaje.IdEmpresa?.ToString()} no tiene prefijo de documentos configurado.");
+            }
+
+            var cliente = await _siilcontext.Clientes
+                .FirstOrDefaultAsync(c => c.IdCliente == viaje.IdCliente);
+
+            // Antes se guardaba en "SIN_CLIENTE"; en el repositorio compartido
+            // eso deja documentos donde nadie los va a buscar.
+            if (string.IsNullOrWhiteSpace(cliente?.NombreCliente))
+            {
+                throw new ArgumentException("El viaje no tiene cliente asignado. Asígnalo antes de subir el documento.");
+            }
+
+            var anio = viaje.Fecha?.Year ?? DateTime.Now.Year;
+
+            var carpetaCliente = NombreDeCarpeta(cliente.NombreCliente);
+            var carpetaFolio = $"{empresa.PrefijoDocumentos.Trim()}{viaje.IdProgramacion}_{anio}";
+
+            return $"{carpetaCliente}/{anio}/{carpetaFolio}";
+        }
+
+        /// <summary>
+        /// Si el viaje ya tiene documento y cambió algo que forma su carpeta
+        /// (cliente, año de la fecha o empresa), mueve la carpeta del folio
+        /// completa al lugar nuevo y actualiza RutaArchivo.
+        ///
+        /// Se mueve la carpeta entera y no sólo el archivo registrado: puede
+        /// haber documentos anteriores del mismo folio que la base ya no
+        /// referencia, y dejarlos atrás los perdería. Al moverla, la carpeta
+        /// vieja deja de existir; las de cliente y año se quedan, porque ahí
+        /// viven otros viajes.
+        ///
+        /// Devuelve la función que deshace el movimiento, para usarla si el
+        /// guardado en la base falla; o null si no hubo nada que mover.
+        /// </summary>
+        private async Task<Action?> MoverCarpetaDelDocumentoSiCambio(ProgramacionViaje viaje)
+        {
+            if (string.IsNullOrWhiteSpace(viaje.RutaArchivo))
+            {
+                return null;
+            }
+
+            var ultimaDiagonal = viaje.RutaArchivo.LastIndexOf('/');
+
+            if (ultimaDiagonal <= 0)
+            {
+                return null;
+            }
+
+            var carpetaAnterior = viaje.RutaArchivo.Substring(0, ultimaDiagonal);
+
+            string carpetaNueva;
+
+            try
+            {
+                carpetaNueva = await CarpetaDelViaje(viaje);
+            }
+            catch (ArgumentException)
+            {
+                // Le quitaron el cliente al viaje: no hay a dónde moverlo. Se
+                // deja donde está en lugar de impedir que se guarde la edición.
+                return null;
+            }
+
+            if (string.Equals(carpetaAnterior, carpetaNueva, StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            var raiz = ObtenerRutaRaiz();
+            var origen = RutaDentroDeLaRaiz(raiz, carpetaAnterior);
+            var destino = RutaDentroDeLaRaiz(raiz, carpetaNueva);
+
+            // Registros guardados con el esquema anterior (dentro del sitio)
+            // no tienen carpeta en el repositorio: no hay nada que mover.
+            if (!Directory.Exists(origen))
+            {
+                return null;
+            }
+
+            // No se mezclan dos carpetas de folio: si ya existe la de destino,
+            // alguien la creó a mano y hay que revisarla antes de mover.
+            if (Directory.Exists(destino))
+            {
+                throw new ArgumentException(
+                    $"No se pudo mover el documento: ya existe la carpeta {carpetaNueva} en el repositorio.");
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(destino)!);
+            Directory.Move(origen, destino);
+
+            var rutaAnterior = viaje.RutaArchivo;
+            viaje.RutaArchivo = $"{carpetaNueva}/{viaje.RutaArchivo.Substring(ultimaDiagonal + 1)}";
+
+            return () =>
+            {
+                Directory.Move(destino, origen);
+                viaje.RutaArchivo = rutaAnterior;
+            };
+        }
+
+        /// <summary>
+        /// Nombre de carpeta a partir del nombre del cliente, sin alterarlo:
+        /// las carpetas del repositorio ya existen con ese nombre exacto, así
+        /// que sólo se quitan los caracteres que Windows no admite y los
+        /// espacios o puntos al final, que tampoco permite.
+        /// </summary>
+        private static string NombreDeCarpeta(string valor)
+        {
+            var invalidos = Path.GetInvalidFileNameChars();
+
+            var limpio = new string(valor.Where(c => !invalidos.Contains(c)).ToArray())
+                .Trim()
+                .TrimEnd('.', ' ');
+
+            if (string.IsNullOrEmpty(limpio))
+            {
+                throw new ArgumentException("El nombre del cliente no sirve como nombre de carpeta.");
+            }
+
+            return limpio;
         }
 
         /// <summary>
@@ -105,7 +290,7 @@ namespace API.Services
                 return null;
             }
 
-            var rutaAbsoluta = Path.Combine(_entorno.ContentRootPath, viaje.RutaArchivo.Replace("/", Path.DirectorySeparatorChar.ToString()));
+            var rutaAbsoluta = RutaDentroDeLaRaiz(ObtenerRutaRaiz(), viaje.RutaArchivo);
 
             if (!File.Exists(rutaAbsoluta))
             {
@@ -391,7 +576,11 @@ namespace API.Services
             viajeExistente.EnvioCita = dto.EnvioCita;
             viajeExistente.EnvioSeguimiento = dto.EnvioSeguimiento;
             viajeExistente.EnvioCcp = dto.EnvioCCP;
-            
+
+            // Va antes de armar la bitácora para que el cambio de RutaArchivo
+            // quede registrado junto con el cambio de cliente o fecha que lo causó.
+            var deshacerMovimiento = await MoverCarpetaDelDocumentoSiCambio(viajeExistente);
+
             var entrada = _siilcontext.Entry(viajeExistente);
 
             // Una sola marca de tiempo para todas las filas de esta edición.
@@ -431,7 +620,18 @@ namespace API.Services
             // haber cambiado nada afecta 0 filas, y eso NO es un fallo. El único
             // caso de error real es que el viaje no exista, y ese ya se atendió
             // arriba devolviendo null.
-            await _siilcontext.SaveChangesAsync();
+            try
+            {
+                await _siilcontext.SaveChangesAsync();
+            }
+            catch
+            {
+                // Si la base no guardó, la carpeta regresa a donde estaba: de lo
+                // contrario RutaArchivo apuntaría a un lugar donde ya no está.
+                deshacerMovimiento?.Invoke();
+                throw;
+            }
+
             return viajeExistente;
         }
 
