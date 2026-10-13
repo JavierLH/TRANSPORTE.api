@@ -38,6 +38,8 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<Cliente> Clientes { get; set; }
 
+    public virtual DbSet<CatalogoMaestroClientes> CatalogoMaestroClientes { get; set; }
+
     public virtual DbSet<ClientesFactura> ClientesFacturas { get; set; }
 
     public virtual DbSet<Contenedore> Contenedores { get; set; }
