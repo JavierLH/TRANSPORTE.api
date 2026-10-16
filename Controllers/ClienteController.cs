@@ -1,4 +1,5 @@
 using API.DTOs.Error;
+using API.DTOs.Services;
 using APIV2.Models;
 using APIV2.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +29,43 @@ namespace APIV2.Controllers
         public async Task<ActionResult<List<Cliente>>> obtenerClientesPorEmpresa(int idEmpresa)
         {
             return await this._clientesService.obtenerClientesPorEmpresa(idEmpresa);
+        }
+
+        /// <summary>Clientes del catálogo maestro que esa empresa todavía no tiene.</summary>
+        [HttpGet("{idEmpresa}/maestros-disponibles")]
+        public async Task<ActionResult<List<ClienteMaestroDTO>>> ObtenerMaestrosDisponibles(int idEmpresa)
+        {
+            return await _clientesService.obtenerMaestrosDisponibles(idEmpresa);
+        }
+
+        /// <summary>Anexa un cliente del catálogo maestro a una empresa.</summary>
+        [HttpPost("anexar")]
+        public async Task<ActionResult<Cliente>> Anexar([FromBody] AnexarClienteDTO dto)
+        {
+            var maestro = await _clientesService.obtenerMaestroPorId(dto.IdClienteMaestro);
+
+            if (maestro == null)
+            {
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = "El cliente no existe en el catálogo maestro.",
+                    ClaseConError = $"Cliente maestro con ID {dto.IdClienteMaestro} no encontrado."
+                });
+            }
+
+            // La pantalla ya no ofrece los anexados, pero dos usuarios pueden
+            // anexar el mismo cliente al mismo tiempo: se vuelve a revisar aquí.
+            if (await _clientesService.estaAnexado(dto.IdClienteMaestro, dto.IdEmpresa))
+            {
+                return StatusCode(409, new RespuestaError<string>
+                {
+                    Mensaje = $"{maestro.RazonSocial} ya está anexado a esta empresa.",
+                    ClaseConError = "Cliente duplicado"
+                });
+            }
+
+            var cliente = await _clientesService.anexar(maestro, dto.IdEmpresa);
+            return Ok(cliente);
         }
 
         [HttpGet("{idCliente}")]

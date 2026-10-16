@@ -1,3 +1,4 @@
+using API.DTOs.Services;
 using APIV2.Models;
 using APIV2.Repositorio;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,67 @@ namespace APIV2.Services
             await this.repositorio.Clientes
                 .Where(c => c.IdCliente == idCliente)
                 .ExecuteDeleteAsync();
+        }
+
+        // ─── Catálogo maestro ────────────────────────────────────────────
+
+        /// <summary>
+        /// Clientes del catálogo maestro que esa empresa todavía no tiene. Los
+        /// que ya están anexados se excluyen para que no se pueda anexar dos
+        /// veces el mismo cliente a la misma empresa.
+        /// </summary>
+        public async Task<List<ClienteMaestroDTO>> obtenerMaestrosDisponibles(int idEmpresa)
+        {
+            return await this.repositorio.CatalogoMaestroClientes
+                .Where(maestro => !maestro.Clientes.Any(cliente => cliente.IdEmpresa == idEmpresa))
+                .OrderBy(maestro => maestro.RazonSocial)
+                .Select(maestro => new ClienteMaestroDTO
+                {
+                    IdClienteMaestro = maestro.IdClienteMaestro,
+                    RFC = maestro.RFC,
+                    RazonSocial = maestro.RazonSocial
+                })
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Sin seguimiento a propósito: si EF rastreara el maestro, al anexar
+        /// enlazaría solo cliente → maestro → Clientes → cliente, y al devolver
+        /// el cliente en JSON el serializador detecta un ciclo y falla.
+        /// </summary>
+        public async Task<CatalogoMaestroClientes?> obtenerMaestroPorId(int idClienteMaestro)
+        {
+            return await this.repositorio.CatalogoMaestroClientes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(maestro => maestro.IdClienteMaestro == idClienteMaestro);
+        }
+
+        public async Task<bool> estaAnexado(int idClienteMaestro, int idEmpresa)
+        {
+            return await this.repositorio.Clientes
+                .AnyAsync(cliente => cliente.IdClienteMaestro == idClienteMaestro
+                                  && cliente.IdEmpresa == idEmpresa);
+        }
+
+        /// <summary>
+        /// Da de alta el cliente del maestro en la empresa. El nombre se copia
+        /// de la razón social: Clientes sigue teniendo NombreCliente porque
+        /// todo lo que ya existe (viajes, vistas, la carpeta de documentos) lo
+        /// lee de ahí.
+        /// </summary>
+        public async Task<Cliente> anexar(CatalogoMaestroClientes maestro, int idEmpresa)
+        {
+            var cliente = new Cliente
+            {
+                IdEmpresa = idEmpresa,
+                IdClienteMaestro = maestro.IdClienteMaestro,
+                NombreCliente = maestro.RazonSocial
+            };
+
+            this.repositorio.Clientes.Add(cliente);
+            await this.repositorio.SaveChangesAsync();
+
+            return cliente;
         }
     }
 }
