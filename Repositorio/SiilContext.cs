@@ -484,8 +484,10 @@ public partial class SiilContext : DbContext
             new Permiso { IdPermiso = 293, NombrePermiso = "EJECUTIVOS", RutaModulo = "siil/letca/trafico/catalogo/ejecutivos", Padre = 228 },
 
 
-            new Permiso { IdPermiso = 294, NombrePermiso = "ADMINISTRAR ROLES DE EMPRESAS", RutaModulo = "siil/configuraciones/administrarrolesempresas", Padre = 278 }
-            
+            new Permiso { IdPermiso = 294, NombrePermiso = "ADMINISTRAR ROLES DE EMPRESAS", RutaModulo = "siil/configuraciones/administrarrolesempresas", Padre = 278 },
+
+            new Permiso { IdPermiso = 295, NombrePermiso = "COMERCIAL GRUPO", RutaModulo = null, Padre = null },
+            new Permiso { IdPermiso = 296, NombrePermiso = "CONTROL DE VIAJES", RutaModulo = "siil/comercial/control_viajes", Padre = 295 }
 
 
             );

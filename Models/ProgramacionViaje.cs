@@ -220,3 +220,4 @@ public partial class ProgramacionViaje
     [JsonPropertyName("envioCCP")]
     public string? EnvioCcp { get; set; }
 }
+ 

@@ -2443,6 +2443,18 @@ namespace APIV2.Migrations
                             NombrePermiso = "ADMINISTRAR ROLES DE EMPRESAS",
                             Padre = 278,
                             RutaModulo = "siil/configuraciones/administrarrolesempresas"
+                        },
+                        new
+                        {
+                            IdPermiso = 295,
+                            NombrePermiso = "COMERCIAL GRUPO"
+                        },
+                        new
+                        {
+                            IdPermiso = 296,
+                            NombrePermiso = "CONTROL DE VIAJES",
+                            Padre = 295,
+                            RutaModulo = "siil/comercial/control_viajes"
                         });
                 });
 
