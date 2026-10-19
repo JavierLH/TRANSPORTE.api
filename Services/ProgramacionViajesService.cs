@@ -1,4 +1,5 @@
-﻿using API.DTOs.Services;
+﻿using API.DTOs.Controllers.ProgramacionViajesController;
+using API.DTOs.Services;
 using APIV2.DTOs.Services;
 using APIV2.Models;
 using APIV2.Repositorio;
@@ -702,8 +703,70 @@ namespace API.Services
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Guarda lo que comercial decide sobre el convenio de un viaje.
+        ///
+        /// Toca SÓLO esas tres columnas. Se trae la entidad y se asignan una
+        /// por una en vez de usar el DTO completo de ActualizarViaje: ése
+        /// reasigna las ~70 columnas y dejaría el resto del viaje en blanco.
+        ///
+        /// Devuelve false si el folio no existe.
+        /// </summary>
+        public async Task<bool> validarConvenioDelViaje(int idProgramacion, ValidarConvenioDTO dto)
+        {
+            var viaje = await _siilcontext.ProgramacionViajes
+                .FirstOrDefaultAsync(v => v.IdProgramacion == idProgramacion);
+
+            if (viaje == null)
+            {
+                return false;
+            }
+
+            viaje.IdConvenio = dto.IdConvenio;
+            viaje.ComentariosConvenio = dto.ComentariosConvenio;
+            viaje.EstatusConvenio = dto.EstatusConvenio;
+
+            // Misma bitácora que ActualizarViaje. Funciona porque la entidad
+            // viene rastreada: el ChangeTracker ya sabe cuáles de las tres
+            // propiedades cambiaron de verdad y cuáles se reasignaron igual.
+            var entrada = _siilcontext.Entry(viaje);
+
+            // Una sola marca de tiempo para todas las filas: si cada una
+            // tomara la suya, diferirían en microsegundos y sería imposible
+            // agruparlas como una misma edición.
+            var momentoDelCambio = DateTime.Now;
+
+            var cambios = entrada.Properties
+                .Where(propiedad => propiedad.IsModified)
+                .Select(propiedad => new BitacoraCambio
+                {
+                    Tabla = "ProgramacionViajes",
+                    IdRegistro = idProgramacion,
+                    Campo = propiedad.Metadata.Name,
+                    ValorAnterior = propiedad.OriginalValue?.ToString(),
+                    ValorNuevo = propiedad.CurrentValue?.ToString(),
+                    IdUsuario = dto.IdUsuario,
+                    FechaCambio = momentoDelCambio
+                })
+                .ToList();
+
+            if (cambios.Count > 0)
+            {
+                _siilcontext.BitacoraCambios.AddRange(cambios);
+            }
+
+            await _siilcontext.SaveChangesAsync();
+
+            return true;
+        }
+
+        /// <summary>
+        /// idEmpresa es opcional: en null no filtra por empresa y devuelve
+        /// los viajes de las cuatro. Lo usa comercial, que valida convenios
+        /// de todo el grupo en una sola pantalla.
+        /// </summary>
         public async Task<List<ProgramacionDeViajesVista>> obtenerViajesPorFiltrosDeLaVistaOrigenEstatusViajeClienteEjecutivo(
-           int idEmpresa,
+           int? idEmpresa,
            DateTime? fechaInicio,
            DateTime? fechaFin,
            int? idOrigen,
@@ -713,8 +776,10 @@ namespace API.Services
            int? idConvenio
             )
         {
-            var query = _siilcontext.programacionDeViajesVista
-                .Where(v => v.idEmpresa == idEmpresa);
+            var query = _siilcontext.programacionDeViajesVista.AsQueryable();
+
+            if (idEmpresa.HasValue)
+                query = query.Where(v => v.idEmpresa == idEmpresa.Value);
 
             if (fechaInicio.HasValue)
             {

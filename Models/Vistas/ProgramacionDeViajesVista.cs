@@ -187,8 +187,22 @@ namespace APIV2.Models
         [Column("comentarios")]
         public string? comentarios { get; set; }
 
+        /// <summary>
+        /// Las observaciones del convenio, distintas de los comentarios del
+        /// viaje: éstas son las que captura comercial al validar o rechazar.
+        /// </summary>
+        [Column("comentariosConvenio")]
+        public string? comentariosConvenio { get; set; }
+
         [Column("idConvenio")]
         public int? idConvenio { get; set; }
+
+        /// <summary>
+        /// 1 aceptado, 0 rechazado, null todavía sin revisar. Es lo que
+        /// pinta la columna Estatus del control de viajes de comercial.
+        /// </summary>
+        [Column("estatusConvenio")]
+        public int? estatusConvenio { get; set; }
 
     }
 }

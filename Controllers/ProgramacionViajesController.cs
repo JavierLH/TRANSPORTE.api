@@ -301,10 +301,62 @@ namespace API.Controllers
             return Ok(resultados);
         }
 
+        /// <summary>
+        /// Guarda la validación del convenio desde la pantalla de comercial.
+        ///
+        /// Es un endpoint propio y no el de actualizar viaje porque aquél
+        /// reescribe todas las columnas del registro; éste toca únicamente
+        /// el convenio, sus comentarios y su estatus.
+        /// </summary>
+        // PUT: api/ProgramacionViajes/{id}/convenio
+        [HttpPut("{id}/convenio")]
+        public async Task<IActionResult> ValidarConvenio(int id, [FromBody] ValidarConvenioDTO dto)
+        {
+            // null es "sin revisar"; 0 rechazado y 1 aceptado. Cualquier otro
+            // valor dejaría la columna en un estado que nadie sabe leer.
+            if (dto.EstatusConvenio.HasValue
+                && dto.EstatusConvenio.Value != 0
+                && dto.EstatusConvenio.Value != 1)
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "El estatus del convenio sólo puede ser 0, 1 o vacío.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            // Rechazar sin decir por qué deja al ejecutivo sin saber qué
+            // corregir, que es justo lo que esta pantalla busca evitar.
+            if (dto.EstatusConvenio == 0 && string.IsNullOrWhiteSpace(dto.ComentariosConvenio))
+            {
+                return StatusCode(422, new RespuestaError<string>
+                {
+                    Mensaje = "Al rechazar el convenio se requiere un comentario con el motivo.",
+                    ClaseConError = "Verificar elementos en la petición"
+                });
+            }
+
+            bool seGuardo = await _viajesService.validarConvenioDelViaje(id, dto);
+
+            if (!seGuardo)
+            {
+                return StatusCode(404, new RespuestaError<string>
+                {
+                    Mensaje = "No se encontró el viaje con el folio proporcionado.",
+                    ClaseConError = $"Viaje con folio {id} no encontrado."
+                });
+            }
+
+            return NoContent();
+        }
+
         // GET: api/ProgramacionViajes/filtrar-vista
+        //
+        // idEmpresa es opcional: sin él devuelve las cuatro empresas, que es
+        // lo que necesita comercial para validar convenios de todo el grupo.
         [HttpGet("filtrar-vista")]
         public async Task<ActionResult<IEnumerable<ProgramacionDeViajesVista>>> FiltrarVistaPorOrigenEstatusClienteEjecutivo(
-            [FromQuery] int idEmpresa,
+            [FromQuery] int? idEmpresa,
             [FromQuery] DateTime? fechaInicio,
             [FromQuery] DateTime? fechaFin,
             [FromQuery] int? idOrigen,
