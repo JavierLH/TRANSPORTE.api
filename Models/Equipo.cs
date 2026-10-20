@@ -45,8 +45,19 @@ public partial class Equipo
 
     public int? IdEmpresa { get; set; }
 
+    /// <summary>
+    /// La unidad física real a la que corresponde este registro. Nullable
+    /// porque los equipos que ya existen no lo tienen capturado: se van
+    /// vinculando poco a poco sin romper lo que ya funciona.
+    /// </summary>
+    public int? IdReal { get; set; }
+
     [ForeignKey("IdEmpresa")]
     public virtual Empresa? IdEmpresaNavigation { get; set; }
+
+    [ForeignKey("IdReal")]
+    [InverseProperty("Equipos")]
+    public virtual CatalogoMaestroEquipos? IdRealNavigation { get; set; }
 
     [InverseProperty("IdEquipoNavigation")]
     public virtual ICollection<EquipoEmpresaCompartido> EquipoEmpresaCompartidos { get; set; } = new List<EquipoEmpresaCompartido>();

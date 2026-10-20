@@ -204,5 +204,14 @@ namespace APIV2.Models
         [Column("estatusConvenio")]
         public int? estatusConvenio { get; set; }
 
+        /// <summary>
+        /// Nombre del documento adjunto, o null si no tiene. Sirve para saber
+        /// si hay algo que descargar sin pegarle al endpoint.
+        /// </summary>
+        [Column("nombreArchivo")]
+        [StringLength(100)]
+        [Unicode(false)]
+        public string? nombreArchivo { get; set; }
+
     }
 }

@@ -91,6 +91,65 @@ namespace APIV2.Migrations
                     b.ToTable("CatalogoMaestroClientes");
                 });
 
+            modelBuilder.Entity("APIV2.Models.CatalogoMaestroEquipos", b =>
+                {
+                    b.Property<int>("IdEquipo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEquipo"));
+
+                    b.Property<int?>("Anio")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Clave")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int?>("Estatus")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdEmpresa")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdTipoEquipo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Marca")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Modelo")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Placa")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Serie")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("IdEquipo");
+
+                    b.HasIndex("IdEmpresa");
+
+                    b.HasIndex("IdTipoEquipo");
+
+                    b.ToTable("CatalogoMaestroEquipos");
+                });
+
             modelBuilder.Entity("APIV2.Models.Changelog", b =>
                 {
                     b.Property<int>("Id")
@@ -617,6 +676,9 @@ namespace APIV2.Migrations
                     b.Property<int?>("IdEmpresa")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IdReal")
+                        .HasColumnType("int");
+
                     b.Property<int?>("IdTipoEquipo")
                         .HasColumnType("int");
 
@@ -643,6 +705,8 @@ namespace APIV2.Migrations
                     b.HasKey("IdEquipo");
 
                     b.HasIndex("IdEmpresa");
+
+                    b.HasIndex("IdReal");
 
                     b.HasIndex("IdTipoEquipo");
 
@@ -2689,6 +2753,14 @@ namespace APIV2.Migrations
                     b.Property<string>("comentarios")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("comentarios");
+
+                    b.Property<string>("comentariosConvenio")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("comentariosConvenio");
+
+                    b.Property<int?>("estatusConvenio")
+                        .HasColumnType("int")
+                        .HasColumnName("estatusConvenio");
 
                     b.Property<int?>("idConvenio")
                         .HasColumnType("int")
@@ -4851,6 +4923,21 @@ namespace APIV2.Migrations
                     b.ToView("vt_ProgramacionViajesWithConvenios", (string)null);
                 });
 
+            modelBuilder.Entity("APIV2.Models.CatalogoMaestroEquipos", b =>
+                {
+                    b.HasOne("APIV2.Models.Empresa", "IdEmpresaNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdEmpresa");
+
+                    b.HasOne("APIV2.Models.SisTipo", "IdTipoEquipoNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdTipoEquipo");
+
+                    b.Navigation("IdEmpresaNavigation");
+
+                    b.Navigation("IdTipoEquipoNavigation");
+                });
+
             modelBuilder.Entity("APIV2.Models.Cliente", b =>
                 {
                     b.HasOne("APIV2.Models.CatalogoMaestroClientes", "IdClienteMaestroNavigation")
@@ -4899,11 +4986,17 @@ namespace APIV2.Migrations
                         .WithMany()
                         .HasForeignKey("IdEmpresa");
 
+                    b.HasOne("APIV2.Models.CatalogoMaestroEquipos", "IdRealNavigation")
+                        .WithMany("Equipos")
+                        .HasForeignKey("IdReal");
+
                     b.HasOne("APIV2.Models.SisTipo", "IdTipoEquipoNavigation")
                         .WithMany("Equipos")
                         .HasForeignKey("IdTipoEquipo");
 
                     b.Navigation("IdEmpresaNavigation");
+
+                    b.Navigation("IdRealNavigation");
 
                     b.Navigation("IdTipoEquipoNavigation");
                 });
@@ -5118,6 +5211,11 @@ namespace APIV2.Migrations
             modelBuilder.Entity("APIV2.Models.CatalogoMaestroClientes", b =>
                 {
                     b.Navigation("Clientes");
+                });
+
+            modelBuilder.Entity("APIV2.Models.CatalogoMaestroEquipos", b =>
+                {
+                    b.Navigation("Equipos");
                 });
 
             modelBuilder.Entity("APIV2.Models.DestinoEstado", b =>
