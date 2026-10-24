@@ -755,9 +755,52 @@ namespace API.Services
                 _siilcontext.BitacoraCambios.AddRange(cambios);
             }
 
+            await this.actualizarVigenciaDelConvenio(dto, momentoDelCambio);
+
             await _siilcontext.SaveChangesAsync();
 
             return true;
+        }
+
+        /// <summary>
+        /// Guarda la vigencia en la tabla Convenios.
+        ///
+        /// Vive en otra tabla que el viaje, así que el cambio aplica a TODOS
+        /// los viajes que usen ese convenio. Se registra en la bitácora con
+        /// el mismo instante, para que se vea junto al resto de la edición.
+        /// </summary>
+        private async Task actualizarVigenciaDelConvenio(ValidarConvenioDTO dto, DateTime momentoDelCambio)
+        {
+            if (dto.IdConvenio == null || string.IsNullOrWhiteSpace(dto.VigenciaConvenio))
+            {
+                return;
+            }
+
+            if (!DateOnly.TryParse(dto.VigenciaConvenio, out DateOnly vigencia))
+            {
+                return;
+            }
+
+            var convenio = await _siilcontext.Convenios
+                .FirstOrDefaultAsync(c => c.IdConvenio == dto.IdConvenio.Value);
+
+            if (convenio == null || convenio.Vigencia == vigencia)
+            {
+                return;
+            }
+
+            _siilcontext.BitacoraCambios.Add(new BitacoraCambio
+            {
+                Tabla = "Convenios",
+                IdRegistro = convenio.IdConvenio,
+                Campo = nameof(Convenio.Vigencia),
+                ValorAnterior = convenio.Vigencia?.ToString("yyyy-MM-dd"),
+                ValorNuevo = vigencia.ToString("yyyy-MM-dd"),
+                IdUsuario = dto.IdUsuario,
+                FechaCambio = momentoDelCambio
+            });
+
+            convenio.Vigencia = vigencia;
         }
 
         /// <summary>

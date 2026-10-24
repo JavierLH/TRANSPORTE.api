@@ -213,5 +213,19 @@ namespace APIV2.Models
         [Unicode(false)]
         public string? nombreArchivo { get; set; }
 
+        /// <summary>
+        /// Estado del convenio ya resuelto por la vista: ACEPTADO,
+        /// RECHAZADO, PENDIENTE, SINCONVENIO o NUEVO. Combina el
+        /// EstatusConvenio del viaje con la vigencia del convenio.
+        /// </summary>
+        [Column("convenioViaje")]
+        [Unicode(false)]
+        public string? convenioViaje { get; set; }
+
+        /// <summary>Color de fondo que le toca al estado de arriba.</summary>
+        [Column("color")]
+        [Unicode(false)]
+        public string? color { get; set; }
+
     }
 }

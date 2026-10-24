@@ -19,6 +19,15 @@ namespace API.DTOs.Controllers.ProgramacionViajesController
         /// </summary>
         public int? EstatusConvenio { get; set; }
 
+        /// <summary>
+        /// Nueva vigencia del convenio, en formato yyyy-MM-dd.
+        ///
+        /// Ojo: esto NO se guarda en el viaje sino en la tabla Convenios, así
+        /// que cambia la vigencia para todos los viajes que usen ese mismo
+        /// convenio. Si viene vacía, la vigencia no se toca.
+        /// </summary>
+        public string? VigenciaConvenio { get; set; }
+
         /// <summary>Quién hizo el cambio; se registra en la bitácora.</summary>
         public int? IdUsuario { get; set; }
     }
