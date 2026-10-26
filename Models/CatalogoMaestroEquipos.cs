@@ -60,6 +60,7 @@ namespace APIV2.Models
         public int? IdEmpresa { get; set; }
 
         [ForeignKey("IdTipoEquipo")]
+        [InverseProperty("Equipos")]
         public virtual SisTipo? IdTipoEquipoNavigation { get; set; }
 
         [ForeignKey("IdEmpresa")]

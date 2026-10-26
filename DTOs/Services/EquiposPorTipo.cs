@@ -1,4 +1,4 @@
-﻿using APIV2.Models;
+﻿using API.DTOs.Services;
 
 namespace APIV2.DTOs.Services
 {
@@ -6,6 +6,11 @@ namespace APIV2.DTOs.Services
     {
         public int IdTipoEquipo { get; set; }
         public string Descripcion { get; set; } = null!;
-        public List<Equipo> Equipos { get; set; } = new();
+
+        /// <summary>
+        /// Las unidades de ese tipo. Son DTO y no la entidad Equipo porque
+        /// los datos viven ahora en el catálogo maestro.
+        /// </summary>
+        public List<EquipoDisponibleDTO> Equipos { get; set; } = new();
     }
 }

@@ -7,48 +7,28 @@ using Microsoft.EntityFrameworkCore;
 namespace APIV2.Models;
 
 
+/// <summary>
+/// La relación entre una unidad física y la empresa que la usa.
+///
+/// Ya no guarda los datos de la unidad —clave, placa, serie, tipo— porque
+/// ésos viven en CatalogoMaestroEquipos. Aquí sólo queda a quién le toca
+/// cuál, de modo que un mismo tractor puede tener un renglón por cada
+/// empresa que lo opere.
+///
+/// IdEquipo se conserva porque es lo que ProgramacionViajes guarda en
+/// IdEquipoRuta, IdEquipoRetira, IdEquipoIngreso y los demás.
+/// </summary>
 public partial class Equipo
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int? IdEquipo { get; set; }
 
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Clave { get; set; }
-
-    public int? IdTipoEquipo { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Descripcion { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Placa { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Serie { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Marca { get; set; }
-
-    [StringLength(50)]
-    [Unicode(false)]
-    public string? Modelo { get; set; }
-
-    public int? Anio { get; set; }
-
-    public int? Estatus { get; set; }
-
     public int? IdEmpresa { get; set; }
 
     /// <summary>
-    /// La unidad física real a la que corresponde este registro. Nullable
-    /// porque los equipos que ya existen no lo tienen capturado: se van
-    /// vinculando poco a poco sin romper lo que ya funciona.
+    /// La unidad física real. Nullable porque los registros que todavía no
+    /// se vinculan al maestro lo tienen vacío.
     /// </summary>
     public int? IdReal { get; set; }
 
@@ -61,10 +41,4 @@ public partial class Equipo
 
     [InverseProperty("IdEquipoNavigation")]
     public virtual ICollection<EquipoEmpresaCompartido> EquipoEmpresaCompartidos { get; set; } = new List<EquipoEmpresaCompartido>();
-
-    [ForeignKey("IdTipoEquipo")]
-    [InverseProperty("Equipos")]
-    public virtual SisTipo? IdTipoEquipoNavigation { get; set; }
-
-
 }

@@ -42,6 +42,10 @@ public partial class SiilContext : DbContext
 
     public virtual DbSet<CatalogoMaestroEquipos> CatalogoMaestroEquipos { get; set; }
 
+    // Antes sólo se alcanzaba por navegación desde Equipo. Se registra para
+    // poder consultar el catálogo de tipos directamente.
+    public virtual DbSet<SisTipo> SisTipos { get; set; }
+
     public virtual DbSet<ClientesFactura> ClientesFacturas { get; set; }
 
     public virtual DbSet<Contenedore> Contenedores { get; set; }
@@ -160,30 +164,59 @@ public partial class SiilContext : DbContext
         // ==========================================
         // DATOS SEMILLA (SEED DATA)
         // ==========================================
+        // Los datos de estas unidades se mudaron al catálogo maestro; aquí
+        // abajo queda sólo la relación. El IdReal coincide con el IdEquipo
+        // porque el maestro se sembró con los mismos ids.
+        modelBuilder.Entity<CatalogoMaestroEquipos>().HasData(
+            new CatalogoMaestroEquipos { IdEquipo = 400, Clave = "L001", IdTipoEquipo = 3, Descripcion = "L001", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 401, Clave = "L002", IdTipoEquipo = 3, Descripcion = "L002", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 402, Clave = "L003", IdTipoEquipo = 3, Descripcion = "L003", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 403, Clave = "L004", IdTipoEquipo = 3, Descripcion = "L004", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 404, Clave = "L005", IdTipoEquipo = 3, Descripcion = "L005", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 405, Clave = "L006", IdTipoEquipo = 3, Descripcion = "L006", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 406, Clave = "L007", IdTipoEquipo = 3, Descripcion = "L007", Estatus = 1, IdEmpresa = 4 },
+            new CatalogoMaestroEquipos { IdEquipo = 407, Clave = "L008", IdTipoEquipo = 3, Descripcion = "L008", Estatus = 1, IdEmpresa = 4 },
+
+            new CatalogoMaestroEquipos { IdEquipo = 500, Clave = "20", IdTipoEquipo = 7, Descripcion = "20", Estatus = 1, IdEmpresa = 3 },
+            new CatalogoMaestroEquipos { IdEquipo = 501, Clave = "21", IdTipoEquipo = 7, Descripcion = "21", Estatus = 1, IdEmpresa = 3 },
+            new CatalogoMaestroEquipos { IdEquipo = 502, Clave = "23", IdTipoEquipo = 7, Descripcion = "23", Estatus = 1, IdEmpresa = 3 },
+            new CatalogoMaestroEquipos { IdEquipo = 503, Clave = "24", IdTipoEquipo = 7, Descripcion = "24", Estatus = 1, IdEmpresa = 3 },
+            new CatalogoMaestroEquipos { IdEquipo = 504, Clave = "25", IdTipoEquipo = 7, Descripcion = "25", Estatus = 1, IdEmpresa = 3 },
+            new CatalogoMaestroEquipos { IdEquipo = 505, Clave = "26", IdTipoEquipo = 7, Descripcion = "26", Estatus = 1, IdEmpresa = 3 },
+            new CatalogoMaestroEquipos { IdEquipo = 506, Clave = "30", IdTipoEquipo = 7, Descripcion = "30", Estatus = 1, IdEmpresa = 3 },
+
+            new CatalogoMaestroEquipos { IdEquipo = 363, Clave = "TR024", IdTipoEquipo = 3, Descripcion = "TR024", Estatus = 1, IdEmpresa = 1 },
+            new CatalogoMaestroEquipos { IdEquipo = 364, Clave = "TR025", IdTipoEquipo = 3, Descripcion = "TR025", Estatus = 1, IdEmpresa = 1 },
+            new CatalogoMaestroEquipos { IdEquipo = 365, Clave = "TR026", IdTipoEquipo = 3, Descripcion = "TR026", Estatus = 1, IdEmpresa = 1 },
+            new CatalogoMaestroEquipos { IdEquipo = 366, Clave = "TR027", IdTipoEquipo = 3, Descripcion = "TR027", Estatus = 1, IdEmpresa = 1 },
+            new CatalogoMaestroEquipos { IdEquipo = 367, Clave = "TR028", IdTipoEquipo = 3, Descripcion = "TR028", Estatus = 1, IdEmpresa = 1 },
+            new CatalogoMaestroEquipos { IdEquipo = 368, Clave = "TR029", IdTipoEquipo = 3, Descripcion = "TR029", Estatus = 1, IdEmpresa = 1 }
+        );
+
         modelBuilder.Entity<Equipo>().HasData(
-            new Equipo { IdEquipo = 400, Clave = "L001", IdTipoEquipo = 3, Descripcion=  "L001", Placa = null, Serie=null,   Marca=null, Modelo=null, Anio=null, Estatus=1, IdEmpresa=4 },
-            new Equipo { IdEquipo = 401, Clave = "L002", IdTipoEquipo = 3, Descripcion = "L002", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
-            new Equipo { IdEquipo = 402, Clave = "L003", IdTipoEquipo = 3, Descripcion = "L003", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
-            new Equipo { IdEquipo = 403, Clave = "L004", IdTipoEquipo = 3, Descripcion = "L004", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
-            new Equipo { IdEquipo = 404, Clave = "L005", IdTipoEquipo = 3, Descripcion = "L005", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
-            new Equipo { IdEquipo = 405, Clave = "L006", IdTipoEquipo = 3, Descripcion = "L006", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
-            new Equipo { IdEquipo = 406, Clave = "L007", IdTipoEquipo = 3, Descripcion = "L007", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
-            new Equipo { IdEquipo = 407, Clave = "L008", IdTipoEquipo = 3, Descripcion = "L008", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 400, IdReal = 400, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 401, IdReal = 401, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 402, IdReal = 402, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 403, IdReal = 403, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 404, IdReal = 404, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 405, IdReal = 405, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 406, IdReal = 406, IdEmpresa = 4 },
+            new Equipo { IdEquipo = 407, IdReal = 407, IdEmpresa = 4 },
 
-            new Equipo { IdEquipo = 500, Clave = "20", IdTipoEquipo = 7, Descripcion = "20", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 501, Clave = "21", IdTipoEquipo = 7, Descripcion = "21", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 502, Clave = "23", IdTipoEquipo = 7, Descripcion = "23", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 503, Clave = "24", IdTipoEquipo = 7, Descripcion = "24", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 504, Clave = "25", IdTipoEquipo = 7, Descripcion = "25", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 505, Clave = "26", IdTipoEquipo = 7, Descripcion = "26", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
-            new Equipo { IdEquipo = 506, Clave = "30", IdTipoEquipo = 7, Descripcion = "30", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 500, IdReal = 500, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 501, IdReal = 501, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 502, IdReal = 502, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 503, IdReal = 503, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 504, IdReal = 504, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 505, IdReal = 505, IdEmpresa = 3 },
+            new Equipo { IdEquipo = 506, IdReal = 506, IdEmpresa = 3 },
 
-            new Equipo { IdEquipo = 363, Clave = "TR024", IdTipoEquipo = 3, Descripcion = "TR024", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
-            new Equipo { IdEquipo = 364, Clave = "TR025", IdTipoEquipo = 3, Descripcion = "TR025", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
-            new Equipo { IdEquipo = 365, Clave = "TR026", IdTipoEquipo = 3, Descripcion = "TR026", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
-            new Equipo { IdEquipo = 366, Clave = "TR027", IdTipoEquipo = 3, Descripcion = "TR027", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
-            new Equipo { IdEquipo = 367, Clave = "TR028", IdTipoEquipo = 3, Descripcion = "TR028", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 },
-            new Equipo { IdEquipo = 368, Clave = "TR029", IdTipoEquipo = 3, Descripcion = "TR029", Placa = null, Serie = null, Marca = null, Modelo = null, Anio = null, Estatus = 1, IdEmpresa = 1 }
+            new Equipo { IdEquipo = 363, IdReal = 363, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 364, IdReal = 364, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 365, IdReal = 365, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 366, IdReal = 366, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 367, IdReal = 367, IdEmpresa = 1 },
+            new Equipo { IdEquipo = 368, IdReal = 368, IdEmpresa = 1 }
             );
 
         // Estatus Viaje

@@ -1,4 +1,5 @@
 ﻿
+using API.DTOs.Services;
 using APIV2.DTOs.Services;
 using APIV2.Models;
 using APIV2.Repositorio;
@@ -113,41 +114,64 @@ namespace API.Services
             }
         }
 
-        // Helper privado: trae los equipos de un tipo específico
-        private async Task<List<Equipo>> ObtenerEquiposPorTipo(int idEmpresa, int idTipoEquipo)
+        /// <summary>
+        /// Las unidades que la empresa puede usar, agrupadas por tipo.
+        ///
+        /// Equipos ya sólo guarda la relación (IdEquipo, IdReal, IdEmpresa):
+        /// los datos de la unidad viven en CatalogoMaestroEquipos. Por eso se
+        /// une contra el maestro y se proyecta a DTO — devolver la entidad
+        /// Equipo traería nada más los tres ids.
+        ///
+        /// El IdEquipo que sale es el del hijo, porque es el que
+        /// ProgramacionViajes guarda en IdEquipoRuta y sus hermanos.
+        /// </summary>
+        private async Task<List<EquiposPorTipo>> ObtenerEquiposDisponibles(int idEmpresa)
         {
-            return await _siilcontext.Equipos
-                .Where(equipo => equipo.IdEmpresa == idEmpresa && equipo.IdTipoEquipo == idTipoEquipo)
+            var unidades = await (
+                from hijo in this._siilcontext.Equipos
+                // El cast es necesario: IdReal es int? y el del maestro int,
+                // y el join de LINQ exige que los dos lados sean del mismo tipo.
+                join maestro in this._siilcontext.CatalogoMaestroEquipos
+                    on hijo.IdReal equals (int?)maestro.IdEquipo
+                where hijo.IdEmpresa == idEmpresa
+                select new EquipoDisponibleDTO
+                {
+                    IdEquipo = hijo.IdEquipo!.Value,
+                    IdReal = hijo.IdReal,
+                    IdEmpresa = hijo.IdEmpresa,
+
+                    Clave = maestro.Clave,
+                    Descripcion = maestro.Descripcion,
+                    Placa = maestro.Placa,
+                    IdTipoEquipo = maestro.IdTipoEquipo,
+                    Estatus = maestro.Estatus
+                })
                 .ToListAsync();
-        }
 
-        // Orquestador: llama al helper una vez por tipo, en el orden que quieras, y junta todo
-        public async Task<List<Equipo>> ObtenerEquiposOrdenadosPorTipo(int idEmpresa)
-        {
-            var equiposOrdenados = new List<Equipo>();
+            // El nombre del tipo sale de SisTipos. Se resuelve en memoria
+            // sobre un catálogo de cuatro o cinco renglones en vez de meter
+            // un tercer JOIN a la consulta de arriba.
+            var tipos = await this._siilcontext.SisTipos
+                .AsNoTracking()
+                .ToDictionaryAsync(tipo => tipo.IdSisTipo, tipo => tipo.Descripcion);
 
-            equiposOrdenados.AddRange(await ObtenerEquiposPorTipo(idEmpresa, idTipoEquipo: 3)); 
-            equiposOrdenados.AddRange(await ObtenerEquiposPorTipo(idEmpresa, idTipoEquipo: 4)); 
-            equiposOrdenados.AddRange(await ObtenerEquiposPorTipo(idEmpresa, idTipoEquipo: 5)); 
-            equiposOrdenados.AddRange(await ObtenerEquiposPorTipo(idEmpresa, idTipoEquipo: 6)); 
-                                                                                             
-
-            return equiposOrdenados;
+            return unidades
+                .Where(unidad => unidad.IdTipoEquipo != null)
+                .GroupBy(unidad => unidad.IdTipoEquipo!.Value)
+                .Select(grupo => new EquiposPorTipo
+                {
+                    IdTipoEquipo = grupo.Key,
+                    Descripcion = tipos.TryGetValue(grupo.Key, out var nombre) ? nombre : string.Empty,
+                    Equipos = grupo.OrderBy(unidad => unidad.Descripcion).ToList()
+                })
+                .OrderBy(grupo => grupo.IdTipoEquipo)
+                .ToList();
         }
 
 
         public async Task<DatosViajeModal> ObtenerCatalogosParaViaje(int idEmpresa)
         {
-            var Equipos = await this._siilcontext.Equipos
-                .Where(equipo => equipo.IdEmpresa == idEmpresa)
-                .GroupBy(equipo => new { equipo.IdTipoEquipo, equipo.IdTipoEquipoNavigation.Descripcion })
-                .Select(grupo => new EquiposPorTipo
-                {
-                    IdTipoEquipo = grupo.Key.IdTipoEquipo.Value,
-                    Descripcion = grupo.Key.Descripcion,
-                    Equipos = grupo.ToList()
-                }
-                ).ToListAsync();
+            var Equipos = await this.ObtenerEquiposDisponibles(idEmpresa);
 
             var Operadores = this._siilcontext.Operadores.Where(operador => operador.IdEmpresa == idEmpresa).ToList();
             var Ejecutivos = this._siilcontext.Ejecutivos.Where(ejecutivo => ejecutivo.IdEmpresa == idEmpresa).ToList();

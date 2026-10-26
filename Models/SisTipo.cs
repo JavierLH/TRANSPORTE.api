@@ -14,6 +14,11 @@ public partial class SisTipo
 
     public int Estatus { get; set; }
 
+    /// <summary>
+    /// Las unidades de este tipo. Apunta al catálogo maestro y ya no a
+    /// Equipos: el tipo es una característica de la unidad física, no de
+    /// la relación con la empresa.
+    /// </summary>
     [InverseProperty("IdTipoEquipoNavigation")]
-    public virtual ICollection<Equipo> Equipos { get; set; } = new List<Equipo>();
+    public virtual ICollection<CatalogoMaestroEquipos> Equipos { get; set; } = new List<CatalogoMaestroEquipos>();
 }

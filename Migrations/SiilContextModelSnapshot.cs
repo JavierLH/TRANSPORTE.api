@@ -148,6 +148,197 @@ namespace APIV2.Migrations
                     b.HasIndex("IdTipoEquipo");
 
                     b.ToTable("CatalogoMaestroEquipos");
+
+                    b.HasData(
+                        new
+                        {
+                            IdEquipo = 400,
+                            Clave = "L001",
+                            Descripcion = "L001",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 401,
+                            Clave = "L002",
+                            Descripcion = "L002",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 402,
+                            Clave = "L003",
+                            Descripcion = "L003",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 403,
+                            Clave = "L004",
+                            Descripcion = "L004",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 404,
+                            Clave = "L005",
+                            Descripcion = "L005",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 405,
+                            Clave = "L006",
+                            Descripcion = "L006",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 406,
+                            Clave = "L007",
+                            Descripcion = "L007",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 407,
+                            Clave = "L008",
+                            Descripcion = "L008",
+                            Estatus = 1,
+                            IdEmpresa = 4,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 500,
+                            Clave = "20",
+                            Descripcion = "20",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 501,
+                            Clave = "21",
+                            Descripcion = "21",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 502,
+                            Clave = "23",
+                            Descripcion = "23",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 503,
+                            Clave = "24",
+                            Descripcion = "24",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 504,
+                            Clave = "25",
+                            Descripcion = "25",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 505,
+                            Clave = "26",
+                            Descripcion = "26",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 506,
+                            Clave = "30",
+                            Descripcion = "30",
+                            Estatus = 1,
+                            IdEmpresa = 3,
+                            IdTipoEquipo = 7
+                        },
+                        new
+                        {
+                            IdEquipo = 363,
+                            Clave = "TR024",
+                            Descripcion = "TR024",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 364,
+                            Clave = "TR025",
+                            Descripcion = "TR025",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 365,
+                            Clave = "TR026",
+                            Descripcion = "TR026",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 366,
+                            Clave = "TR027",
+                            Descripcion = "TR027",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 367,
+                            Clave = "TR028",
+                            Descripcion = "TR028",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        },
+                        new
+                        {
+                            IdEquipo = 368,
+                            Clave = "TR029",
+                            Descripcion = "TR029",
+                            Estatus = 1,
+                            IdEmpresa = 1,
+                            IdTipoEquipo = 3
+                        });
                 });
 
             modelBuilder.Entity("APIV2.Models.Changelog", b =>
@@ -657,50 +848,11 @@ namespace APIV2.Migrations
                     b.Property<int>("IdEquipo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Anio")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Clave")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int?>("Estatus")
-                        .HasColumnType("int");
-
                     b.Property<int?>("IdEmpresa")
                         .HasColumnType("int");
 
                     b.Property<int?>("IdReal")
                         .HasColumnType("int");
-
-                    b.Property<int?>("IdTipoEquipo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Marca")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Modelo")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Placa")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Serie")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
 
                     b.HasKey("IdEquipo");
 
@@ -708,199 +860,134 @@ namespace APIV2.Migrations
 
                     b.HasIndex("IdReal");
 
-                    b.HasIndex("IdTipoEquipo");
-
                     b.ToTable("Equipos");
 
                     b.HasData(
                         new
                         {
                             IdEquipo = 400,
-                            Clave = "L001",
-                            Descripcion = "L001",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 400
                         },
                         new
                         {
                             IdEquipo = 401,
-                            Clave = "L002",
-                            Descripcion = "L002",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 401
                         },
                         new
                         {
                             IdEquipo = 402,
-                            Clave = "L003",
-                            Descripcion = "L003",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 402
                         },
                         new
                         {
                             IdEquipo = 403,
-                            Clave = "L004",
-                            Descripcion = "L004",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 403
                         },
                         new
                         {
                             IdEquipo = 404,
-                            Clave = "L005",
-                            Descripcion = "L005",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 404
                         },
                         new
                         {
                             IdEquipo = 405,
-                            Clave = "L006",
-                            Descripcion = "L006",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 405
                         },
                         new
                         {
                             IdEquipo = 406,
-                            Clave = "L007",
-                            Descripcion = "L007",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 406
                         },
                         new
                         {
                             IdEquipo = 407,
-                            Clave = "L008",
-                            Descripcion = "L008",
-                            Estatus = 1,
                             IdEmpresa = 4,
-                            IdTipoEquipo = 3
+                            IdReal = 407
                         },
                         new
                         {
                             IdEquipo = 500,
-                            Clave = "20",
-                            Descripcion = "20",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 500
                         },
                         new
                         {
                             IdEquipo = 501,
-                            Clave = "21",
-                            Descripcion = "21",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 501
                         },
                         new
                         {
                             IdEquipo = 502,
-                            Clave = "23",
-                            Descripcion = "23",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 502
                         },
                         new
                         {
                             IdEquipo = 503,
-                            Clave = "24",
-                            Descripcion = "24",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 503
                         },
                         new
                         {
                             IdEquipo = 504,
-                            Clave = "25",
-                            Descripcion = "25",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 504
                         },
                         new
                         {
                             IdEquipo = 505,
-                            Clave = "26",
-                            Descripcion = "26",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 505
                         },
                         new
                         {
                             IdEquipo = 506,
-                            Clave = "30",
-                            Descripcion = "30",
-                            Estatus = 1,
                             IdEmpresa = 3,
-                            IdTipoEquipo = 7
+                            IdReal = 506
                         },
                         new
                         {
                             IdEquipo = 363,
-                            Clave = "TR024",
-                            Descripcion = "TR024",
-                            Estatus = 1,
                             IdEmpresa = 1,
-                            IdTipoEquipo = 3
+                            IdReal = 363
                         },
                         new
                         {
                             IdEquipo = 364,
-                            Clave = "TR025",
-                            Descripcion = "TR025",
-                            Estatus = 1,
                             IdEmpresa = 1,
-                            IdTipoEquipo = 3
+                            IdReal = 364
                         },
                         new
                         {
                             IdEquipo = 365,
-                            Clave = "TR026",
-                            Descripcion = "TR026",
-                            Estatus = 1,
                             IdEmpresa = 1,
-                            IdTipoEquipo = 3
+                            IdReal = 365
                         },
                         new
                         {
                             IdEquipo = 366,
-                            Clave = "TR027",
-                            Descripcion = "TR027",
-                            Estatus = 1,
                             IdEmpresa = 1,
-                            IdTipoEquipo = 3
+                            IdReal = 366
                         },
                         new
                         {
                             IdEquipo = 367,
-                            Clave = "TR028",
-                            Descripcion = "TR028",
-                            Estatus = 1,
                             IdEmpresa = 1,
-                            IdTipoEquipo = 3
+                            IdReal = 367
                         },
                         new
                         {
                             IdEquipo = 368,
-                            Clave = "TR029",
-                            Descripcion = "TR029",
-                            Estatus = 1,
                             IdEmpresa = 1,
-                            IdTipoEquipo = 3
+                            IdReal = 368
                         });
                 });
 
@@ -2750,6 +2837,11 @@ namespace APIV2.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("citaTerminal");
 
+                    b.Property<string>("color")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("color");
+
                     b.Property<string>("comentarios")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("comentarios");
@@ -2757,6 +2849,11 @@ namespace APIV2.Migrations
                     b.Property<string>("comentariosConvenio")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("comentariosConvenio");
+
+                    b.Property<string>("convenioViaje")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
+                        .HasColumnName("convenioViaje");
 
                     b.Property<int?>("estatusConvenio")
                         .HasColumnType("int")
@@ -2769,6 +2866,12 @@ namespace APIV2.Migrations
                     b.Property<int?>("idEmpresa")
                         .HasColumnType("int")
                         .HasColumnName("empresaId");
+
+                    b.Property<string>("nombreArchivo")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("nombreArchivo");
 
                     b.Property<string>("operadorRetira")
                         .HasColumnType("nvarchar(max)")
@@ -4930,7 +5033,7 @@ namespace APIV2.Migrations
                         .HasForeignKey("IdEmpresa");
 
                     b.HasOne("APIV2.Models.SisTipo", "IdTipoEquipoNavigation")
-                        .WithMany()
+                        .WithMany("Equipos")
                         .HasForeignKey("IdTipoEquipo");
 
                     b.Navigation("IdEmpresaNavigation");
@@ -4990,15 +5093,9 @@ namespace APIV2.Migrations
                         .WithMany("Equipos")
                         .HasForeignKey("IdReal");
 
-                    b.HasOne("APIV2.Models.SisTipo", "IdTipoEquipoNavigation")
-                        .WithMany("Equipos")
-                        .HasForeignKey("IdTipoEquipo");
-
                     b.Navigation("IdEmpresaNavigation");
 
                     b.Navigation("IdRealNavigation");
-
-                    b.Navigation("IdTipoEquipoNavigation");
                 });
 
             modelBuilder.Entity("APIV2.Models.EquipoEmpresaCompartido", b =>
