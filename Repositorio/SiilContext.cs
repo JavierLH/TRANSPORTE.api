@@ -264,6 +264,7 @@ public partial class SiilContext : DbContext
             new Role { IdRol = 12, NombreRol = "EJECUTIVO", Descripcion = "Ejecutivo Vikingo", IdEmpresa = 2 },
             new Role { IdRol = 13, NombreRol = "PATIO", Descripcion = "Patio Vikingo", IdEmpresa = 2 },
             new Role { IdRol = 14, NombreRol = "JEFE DE TRAFICO", Descripcion = "Jefe de Tráfico Vikingo", IdEmpresa = 2 },
+            new Role { IdRol = 23, NombreRol = "COMERCIAL", Descripcion = "Comercial Vikingo", IdEmpresa = 2 },
 
             // ----------------------------------------------------
             // Roles para DRAKKAR (IdEmpresa = 3)

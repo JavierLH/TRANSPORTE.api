@@ -3262,6 +3262,13 @@ namespace APIV2.Migrations
                         },
                         new
                         {
+                            IdRol = 23,
+                            Descripcion = "Comercial Vikingo",
+                            IdEmpresa = 2,
+                            NombreRol = "COMERCIAL"
+                        },
+                        new
+                        {
                             IdRol = 15,
                             Descripcion = "Coordinador de Tráfico Drakkar",
                             IdEmpresa = 3,
