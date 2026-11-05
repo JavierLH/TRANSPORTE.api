@@ -227,5 +227,14 @@ namespace APIV2.Models
         [Unicode(false)]
         public string? color { get; set; }
 
+        /// <summary>
+        /// Verdadero cuando el viaje vino de la migración del sistema
+        /// anterior. Esos renglones conservan las llaves originales, así que
+        /// pueden apuntar al catálogo de otra empresa; el modal de edición lo
+        /// usa para saber que tiene que completar los combos a mano.
+        /// </summary>
+        [Column("esUnRegistroLegado")]
+        public bool? esUnRegistroLegado { get; set; }
+
     }
 }
