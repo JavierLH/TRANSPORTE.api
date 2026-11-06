@@ -28,6 +28,13 @@ namespace API.DTOs.Controllers.ProgramacionViajesController
         /// </summary>
         public string? VigenciaConvenio { get; set; }
 
+        /// <summary>
+        /// Horas de estadía que comercial le reconoce al cliente en este
+        /// viaje. A diferencia de la vigencia, sí vive en el viaje y no en
+        /// el convenio, así que sólo afecta a este folio.
+        /// </summary>
+        public int? HorasEstadiasCliente { get; set; }
+
         /// <summary>Quién hizo el cambio; se registra en la bitácora.</summary>
         public int? IdUsuario { get; set; }
     }

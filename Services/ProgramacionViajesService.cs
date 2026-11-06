@@ -21,6 +21,16 @@ namespace API.Services
 
         private const long TamanoMaximoBytes = 10 * 1024 * 1024; // 10 MB
 
+        /// <summary>
+        /// El convenio regresa a revisión de comercial.
+        ///
+        /// No se traduce a "pendiente" de inmediato: la vista sigue pintándolo
+        /// verde mientras el convenio tenga vigencia, y lo pasa a pendiente en
+        /// cuanto el plazo expira. Lo que hace este valor es quitarle el
+        /// ACEPTADO permanente que le daba el 1.
+        /// </summary>
+        private const int EstatusConvenioEnRevision = 3;
+
         public ProgramacionViajesService(SiilContext siilContext, IConfiguration configuracion)
         {
             this._siilcontext = siilContext;
@@ -534,7 +544,16 @@ namespace API.Services
             viajeExistente.Estatus = dto.Estatus;
             viajeExistente.IdUsuarioUltimaModificacion = dto.IdUsuarioUltimaModificacion;
             viajeExistente.ComentariosConvenio = dto.ComentariosConvenio;
-            viajeExistente.EstatusConvenio = dto.EstatusConvenio;
+
+            // Toda edición desde programación invalida el visto bueno de
+            // comercial: si cambiaron datos del viaje, el convenio que se
+            // aprobó ya no es sobre lo mismo y hay que volver a mirarlo.
+            //
+            // No se toma de dto.EstatusConvenio a propósito. El formulario del
+            // viaje no captura ese campo, así que antes llegaba nulo y borraba
+            // la validación sin dejar constancia de por qué.
+            viajeExistente.EstatusConvenio = EstatusConvenioEnRevision;
+
             viajeExistente.IdOperadorRetira = dto.IdOperadorRetira;
             viajeExistente.IdOrigen = dto.IdOrigen;
 
@@ -706,9 +725,10 @@ namespace API.Services
         /// <summary>
         /// Guarda lo que comercial decide sobre el convenio de un viaje.
         ///
-        /// Toca SÓLO esas tres columnas. Se trae la entidad y se asignan una
-        /// por una en vez de usar el DTO completo de ActualizarViaje: ése
-        /// reasigna las ~70 columnas y dejaría el resto del viaje en blanco.
+        /// Toca SÓLO las columnas del convenio y las horas de estadía. Se
+        /// trae la entidad y se asignan una por una en vez de usar el DTO
+        /// completo de ActualizarViaje: ése reasigna las ~70 columnas y
+        /// dejaría el resto del viaje en blanco.
         ///
         /// Devuelve false si el folio no existe.
         /// </summary>
@@ -725,6 +745,7 @@ namespace API.Services
             viaje.IdConvenio = dto.IdConvenio;
             viaje.ComentariosConvenio = dto.ComentariosConvenio;
             viaje.EstatusConvenio = dto.EstatusConvenio;
+            viaje.HorasEstadiasCliente = dto.HorasEstadiasCliente;
 
             // Misma bitácora que ActualizarViaje. Funciona porque la entidad
             // viene rastreada: el ChangeTracker ya sabe cuáles de las tres

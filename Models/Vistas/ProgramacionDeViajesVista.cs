@@ -236,5 +236,13 @@ namespace APIV2.Models
         [Column("esUnRegistroLegado")]
         public bool? esUnRegistroLegado { get; set; }
 
+        /// <summary>
+        /// Horas de estadía reconocidas al cliente. Las captura comercial
+        /// desde el control de convenios; se expone aquí para poder
+        /// precargarlas al reabrir el registro.
+        /// </summary>
+        [Column("HorasEstadiasCliente")]
+        public int? horasEstadiasCliente { get; set; }
+
     }
 }
